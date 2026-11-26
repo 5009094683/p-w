@@ -2,6 +2,9 @@
  * Starts the built site on a local Cloudflare runtime (wrangler dev) for the
  * duration of the test run. Redirects, headers and the 404 page are then tested
  * against the same asset-serving code that runs in production.
+ *
+ * Set EDGE_URL to test a deployed site instead, such as a preview or the live
+ * domain: `EDGE_URL=https://yesbhautik.co.in pnpm test:live`.
  */
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -40,6 +43,12 @@ async function waitFor(url: string, timeoutMs: number, output: () => string): Pr
 }
 
 export default async function setup(project: TestProject) {
+  const remote = process.env.EDGE_URL?.replace(/\/+$/, '');
+  if (remote) {
+    project.provide('edgeUrl', remote);
+    return;
+  }
+
   const root = process.cwd();
   if (!existsSync(join(root, 'dist', 'index.html'))) {
     throw new Error('No built site in dist/. Run "pnpm build" before the tests.');

@@ -84,6 +84,36 @@ describe('the modification-date lock', () => {
 describe('robots.txt', () => {
   const robots = site.read('/robots.txt');
 
+  it('is valid line by line, by the rules Lighthouse 13 applies', () => {
+    // The directives Lighthouse accepts that this file uses. Lighthouse CI here
+    // runs an older release that does not know Content-Signal, so its own
+    // robots.txt audit is skipped and this test does the same job.
+    const known = new Set(['user-agent', 'allow', 'disallow', 'sitemap', 'content-signal']);
+    let inGroup = false;
+    robots.split('\n').forEach((raw, index) => {
+      const line = raw.split('#')[0]!.trim();
+      if (!line) return;
+      const colon = line.indexOf(':');
+      expect(colon, `line ${index + 1} has no directive: "${raw}"`).toBeGreaterThan(0);
+      const directive = line.slice(0, colon).trim().toLowerCase();
+      const value = line.slice(colon + 1).trim();
+      expect(known, `line ${index + 1}: unknown directive "${directive}"`).toContain(directive);
+
+      if (directive === 'user-agent') {
+        expect(value, `line ${index + 1}: user-agent without a name`).not.toBe('');
+        inGroup = true;
+      } else if (directive === 'allow' || directive === 'disallow') {
+        expect(inGroup, `line ${index + 1}: rule before any user-agent`).toBe(true);
+        expect(value === '' || /^[/*]/.test(value), `line ${index + 1}: pattern must start with / or *`).toBe(true);
+      } else if (directive === 'sitemap') {
+        expect(() => new URL(value), `line ${index + 1}: sitemap must be an absolute URL`).not.toThrow();
+        expect(value.startsWith('https://')).toBe(true);
+      } else if (directive === 'content-signal') {
+        expect(value, `line ${index + 1}`).toMatch(/^(search|ai-input|ai-train)=(yes|no)(, (search|ai-input|ai-train)=(yes|no))*$/);
+      }
+    });
+  });
+
   it('allows everything and blocks nothing', () => {
     expect(robots).toMatch(/User-agent: \*\n(?:.*\n)*?Allow: \//);
     expect(robots).not.toMatch(/^Disallow:\s*\S/m);

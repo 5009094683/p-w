@@ -13,6 +13,9 @@ import { legacyUrls } from './legacy-urls.ts';
 
 const base = inject('edgeUrl');
 const site = new Site();
+/** True when the tests run against a deployed site rather than the local runtime. */
+const remote = Boolean(process.env.EDGE_URL);
+const onWorkersDev = new URL(base).hostname.endsWith('.workers.dev');
 const get = (path: string, init?: RequestInit) => fetch(`${base}${path}`, { redirect: 'manual', ...init });
 
 /** Where a redirect points, as a site path when it stays on this site. */
@@ -167,16 +170,24 @@ describe('security headers', () => {
 });
 
 describe('search and preview deployments', () => {
-  it('marks every workers.dev address noindex', async () => {
+  it.skipIf(remote)('marks every workers.dev address noindex', async () => {
     for (const host of ['yesbhautik-site.example.workers.dev', 'abc123-yesbhautik-site.example.workers.dev']) {
       expect((await headersForHost(host))['x-robots-tag'], host).toBe('noindex');
     }
   });
 
-  it('sends no noindex header on the production domain', async () => {
+  it.skipIf(remote)('sends no noindex header on the production domain', async () => {
     for (const host of ['yesbhautik.co.in', 'www.yesbhautik.co.in']) {
       expect((await headersForHost(host))['x-robots-tag'], host).toBeUndefined();
       expect((await headersForHost(host, '/about'))['x-robots-tag'], host).toBeUndefined();
+    }
+  });
+
+  it.runIf(remote)('is noindex exactly when it is a workers.dev preview', async () => {
+    for (const path of ['/', '/about', '/index.md']) {
+      const header = (await get(path)).headers.get('x-robots-tag');
+      if (onWorkersDev) expect(header, path).toBe('noindex');
+      else expect(header, path).toBeNull();
     }
   });
 });
@@ -202,6 +213,18 @@ describe('Markdown and discovery headers', () => {
     expect(link).toContain('</llms.txt>; rel="describedby"');
     expect(link).toContain('</profile.json>; rel="alternate"; type="application/json"');
     expect(link).toContain('</sitemap.xml>; rel="sitemap"');
+  });
+
+  // Content negotiation is added by a rule on the production zone (see the go-live checklist).
+  it.runIf(remote && !onWorkersDev)('serves the Markdown version when a client asks for text/markdown', async () => {
+    for (const path of ['/', '/about', '/projects/tgmoji']) {
+      const response = await get(path, { headers: { accept: 'text/markdown' } });
+      expect(response.status, path).toBe(200);
+      expect(response.headers.get('content-type'), path).toContain('text/markdown');
+      expect(await response.text(), path).toMatch(/^---\ntitle: /);
+    }
+    const html = await get('/about', { headers: { accept: 'text/html' } });
+    expect(html.headers.get('content-type')).toContain('text/html');
   });
 
   it('can be read from any origin', async () => {

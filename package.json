@@ -24,6 +24,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
+    "test:live": "vitest run tests/edge.test.ts",
     "verify": "pnpm lint && pnpm check && pnpm build && pnpm test",
     "lhci": "lhci autorun",
     "lastmod": "LASTMOD=write astro build",
