@@ -52,29 +52,42 @@ https://:version.:subdomain.workers.dev/*
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'
 
 # ---------------------------------------------------------------------------
-# Pages: each one points to its Markdown version
+# Pages: each one states its character set and points to its Markdown version
 # ---------------------------------------------------------------------------
+# Cloudflare serves HTML assets as plain "text/html". Naming the character set
+# in the header as well as in the page removes any guesswork for a client.
 /
+  Content-Type: text/html; charset=utf-8
   Link: </index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain", </profile.json>; rel="alternate"; type="application/json", </sitemap.xml>; rel="sitemap"; type="application/xml"
 /about
+  Content-Type: text/html; charset=utf-8
   Link: </about.md>; rel="alternate"; type="text/markdown"
 /services
+  Content-Type: text/html; charset=utf-8
   Link: </services.md>; rel="alternate"; type="text/markdown"
 /projects
+  Content-Type: text/html; charset=utf-8
   Link: </projects.md>; rel="alternate"; type="text/markdown"
 /projects/:slug
+  Content-Type: text/html; charset=utf-8
   Link: </projects/:slug.md>; rel="alternate"; type="text/markdown"
 /speaking
+  Content-Type: text/html; charset=utf-8
   Link: </speaking.md>; rel="alternate"; type="text/markdown"
 /contact
+  Content-Type: text/html; charset=utf-8
   Link: </contact.md>; rel="alternate"; type="text/markdown"
 /press
+  Content-Type: text/html; charset=utf-8
   Link: </press.md>; rel="alternate"; type="text/markdown"
 /uses
+  Content-Type: text/html; charset=utf-8
   Link: </uses.md>; rel="alternate"; type="text/markdown"
 /posts
+  Content-Type: text/html; charset=utf-8
   Link: </posts.md>; rel="alternate"; type="text/markdown"
 /posts/:slug
+  Content-Type: text/html; charset=utf-8
   Link: </posts/:slug.md>; rel="alternate"; type="text/markdown"
 
 # ---------------------------------------------------------------------------
@@ -92,10 +105,12 @@ https://:version.:subdomain.workers.dev/*
   Link: <https://yesbhautik.co.in/>; rel="canonical"
 /projects/:slug.md
   ! Link
+  ! Content-Type
   Content-Type: text/markdown; charset=utf-8
   Link: <https://yesbhautik.co.in/projects/:slug>; rel="canonical"
 /posts/:slug.md
   ! Link
+  ! Content-Type
   Content-Type: text/markdown; charset=utf-8
   Link: <https://yesbhautik.co.in/posts/:slug>; rel="canonical"
 
@@ -108,6 +123,10 @@ https://:version.:subdomain.workers.dev/*
   Content-Type: application/atom+xml; charset=utf-8
 /feed.json
   Content-Type: application/feed+json; charset=utf-8
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8
 /llms.txt
   Content-Type: text/plain; charset=utf-8
 /llms-full.txt
