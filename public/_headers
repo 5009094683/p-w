@@ -1,0 +1,116 @@
+# Response headers for every page and asset, applied by Cloudflare.
+# Rules run in file order, and a later rule can remove a header with "! Name".
+# At most 100 rules are allowed: sections use one placeholder rule each.
+
+# ---------------------------------------------------------------------------
+# Everything
+# ---------------------------------------------------------------------------
+# The build replaces __CSP_SCRIPT_HASHES__ with the hashes of the two inline
+# scripts it wrote (the theme script and the speculation rules), so the policy
+# allows those and nothing else. Styles, fonts and images load from this origin
+# only, and the site cannot be framed.
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self' __CSP_SCRIPT_HASHES__; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()
+  Access-Control-Allow-Origin: *
+  Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+# Preview deployments must never compete with the real site in search.
+https://:version.:subdomain.workers.dev/*
+  X-Robots-Tag: noindex
+
+# ---------------------------------------------------------------------------
+# Caching
+# ---------------------------------------------------------------------------
+# Files under /_astro/ carry a content hash in their name, so they never change.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og/*
+  Cache-Control: public, max-age=86400
+
+/favicon.ico
+  Cache-Control: public, max-age=604800
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+/icon-192.png
+  Cache-Control: public, max-age=604800
+/icon-512.png
+  Cache-Control: public, max-age=604800
+
+# SVG files are documents in their own right. They may style themselves, and
+# they may not run scripts or load anything.
+/*.svg
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'
+
+# ---------------------------------------------------------------------------
+# Pages: each one points to its Markdown version
+# ---------------------------------------------------------------------------
+/
+  Link: </index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain", </profile.json>; rel="alternate"; type="application/json", </sitemap.xml>; rel="sitemap"; type="application/xml"
+/about
+  Link: </about.md>; rel="alternate"; type="text/markdown"
+/services
+  Link: </services.md>; rel="alternate"; type="text/markdown"
+/projects
+  Link: </projects.md>; rel="alternate"; type="text/markdown"
+/projects/:slug
+  Link: </projects/:slug.md>; rel="alternate"; type="text/markdown"
+/speaking
+  Link: </speaking.md>; rel="alternate"; type="text/markdown"
+/contact
+  Link: </contact.md>; rel="alternate"; type="text/markdown"
+/press
+  Link: </press.md>; rel="alternate"; type="text/markdown"
+/uses
+  Link: </uses.md>; rel="alternate"; type="text/markdown"
+/posts
+  Link: </posts.md>; rel="alternate"; type="text/markdown"
+/posts/:slug
+  Link: </posts/:slug.md>; rel="alternate"; type="text/markdown"
+
+# ---------------------------------------------------------------------------
+# Markdown versions: each one names the page it mirrors as canonical, so search
+# engines credit the page and not its twin
+# ---------------------------------------------------------------------------
+/:page.md
+  Content-Type: text/markdown; charset=utf-8
+  Link: <https://yesbhautik.co.in/:page>; rel="canonical"
+/index.md
+  ! Link
+  Link: <https://yesbhautik.co.in/>; rel="canonical"
+/index.html.md
+  ! Link
+  Link: <https://yesbhautik.co.in/>; rel="canonical"
+/projects/:slug.md
+  ! Link
+  Content-Type: text/markdown; charset=utf-8
+  Link: <https://yesbhautik.co.in/projects/:slug>; rel="canonical"
+/posts/:slug.md
+  ! Link
+  Content-Type: text/markdown; charset=utf-8
+  Link: <https://yesbhautik.co.in/posts/:slug>; rel="canonical"
+
+# ---------------------------------------------------------------------------
+# Feeds and data files, with their proper media types
+# ---------------------------------------------------------------------------
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+/feed.atom
+  Content-Type: application/atom+xml; charset=utf-8
+/feed.json
+  Content-Type: application/feed+json; charset=utf-8
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+/site.webmanifest
+  Content-Type: application/manifest+json; charset=utf-8

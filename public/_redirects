@@ -1,0 +1,60 @@
+# Redirects applied by Cloudflare before any page is served.
+# Every address the previous site published is listed in tests/legacy-urls.ts
+# with what it should do now; the tests check this file against that list.
+# Addresses that were template leftovers have no rule here and return 404.
+
+# ---------------------------------------------------------------------------
+# Pages that moved
+# ---------------------------------------------------------------------------
+# Each is listed with and without a trailing slash, because both forms were linked.
+/chat /contact 301
+/chat/ /contact 301
+/giving-talks /speaking 301
+/giving-talks/ /speaking 301
+/talks /speaking 301
+/talks/ /speaking 301
+/notes /posts 301
+/notes/ /posts 301
+/blog /posts 301
+/blog/ /posts 301
+/demos /projects 301
+/demos/ /projects 301
+/rss /feed.xml 301
+/sponsors-list https://github.com/sponsors/yesbhautik 301
+/sponsors-list/ https://github.com/sponsors/yesbhautik 301
+
+# Files that were renamed
+/favicon.png /logo.png 301
+
+# Social images that kept being shared under their old names
+/og/preview.png /og/home.png 301
+/og/chat.png /og/contact.png 301
+/og/giving-talks.png /og/speaking.png 301
+/og/talks.png /og/speaking.png 301
+
+# ---------------------------------------------------------------------------
+# Short links
+# ---------------------------------------------------------------------------
+/github https://github.com/yesbhautik 301
+/gh https://github.com/yesbhautik 301
+/linkedin https://www.linkedin.com/in/yesbhautik 301
+/twitter https://x.com/yesbhautik 301
+/x https://x.com/yesbhautik 301
+/instagram https://www.instagram.com/yesbhautik 301
+/ig https://www.instagram.com/yesbhautik 301
+/tg https://t.me/yesbhautik 301
+/telegram https://t.me/yesbhautik 301
+/wp https://wa.me/916353586391 301
+/whatsapp https://wa.me/916353586391 301
+/matrix https://matrix.to/#/@yesbhautik:beeper.com 301
+/beeper https://matrix.to/#/@yesbhautik:beeper.com 301
+/yt https://www.youtube.com/@yesbhautik 301
+/youtube https://www.youtube.com/@yesbhautik 301
+/bluesky https://bsky.app/profile/yesbhautik.co.in 301
+/mas https://fosstodon.org/@yesbhautik 301
+/mastodon https://fosstodon.org/@yesbhautik 301
+/threads https://www.threads.com/@yesbhautik 301
+/sponsor https://github.com/sponsors/yesbhautik 301
+/support https://github.com/sponsors/yesbhautik 301
+/cal https://cal.com/yesbhautik 301
+/stars-rank https://github.com/yesbhautik?tab=repositories&type=source&sort=stargazers 302
