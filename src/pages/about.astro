@@ -22,6 +22,7 @@ const graph = pageGraph({
   trail: [{ name: meta.label, path: meta.path }],
   fullPerson: true,
   personDescription: questions[0]!.answer,
+  personCredentials: true,
 });
 ---
 
@@ -44,15 +45,15 @@ const graph = pageGraph({
           other companies. The company used to be called {company.formerName}.
         </p>
         <p>
-          Most of my time goes into <a href="/projects/flavorgpt" class="link">{products.flavorgpt.name}</a>. It began
+          What I am building now is <a href="/projects/flavorgpt" class="link">{products.flavorgpt.name}</a>. It began
           with a simple frustration: every AI provider locks you into its own models and its own rules. So we built the
           workspace we wanted, one that connects to your databases, APIs and files, lets you put several models side by
           side in one conversation, and lets you stay anonymous while you do it.
         </p>
         <p>
-          Alongside the company I work directly with founders. The subjects are the ones I deal with every day:
-          go-to-market, business development, token generation events and how to put AI into a product. If that is
-          where you are, <a href="/services" class="link">this is how I can help</a>.
+          Alongside the company I work directly with founders, on go-to-market, business development, token
+          generation events and how to put AI into a product. If that is where you are,
+          <a href="/services" class="link">this is how I can help</a>.
         </p>
         <p>
           Dreaming up ideas and making them real is where my passion lies. A lot of what I build is public on GitHub,
@@ -75,9 +76,7 @@ const graph = pageGraph({
             </time>
             <p>
               {milestone.label}
-              <a href={milestone.source} class="link ml-1 whitespace-nowrap text-sm text-muted">
-                Source
-              </a>
+              <a href={milestone.source} class="link ml-1 whitespace-nowrap text-sm text-muted">Source</a>
             </p>
           </li>
         ))
@@ -115,9 +114,7 @@ const graph = pageGraph({
         credentials.map((credential) => (
           <li class="card">
             <h3 class="text-lg font-semibold leading-snug tracking-tight">
-              <a href={credential.url} class="stretched rounded-sm">
-                {credential.name}
-              </a>
+              <a href={credential.url} class="stretched rounded-sm">{credential.name}</a>
             </h3>
             <p class="text-[0.9375rem] text-muted">
               Training badge from {credential.issuer}, issued on

@@ -65,11 +65,19 @@ export function headshotNode(): ImageObjectLeaf {
   };
 }
 
+export interface PersonOptions {
+  /** A bio that the page prints word for word. */
+  description?: string | undefined;
+  /** Include his training badges, on the page that lists them. */
+  credentials?: boolean | undefined;
+}
+
 /**
  * The short form goes on every page; the full form on the pages that are about him.
- * A description is included only when the page prints that same text.
+ * Anything a page does not show (a bio, the credentials) is left out of its data.
  */
-export function personNode(detail: 'full' | 'compact' = 'compact', description?: string): PersonLeaf {
+export function personNode(detail: 'full' | 'compact' = 'compact', options: PersonOptions = {}): PersonLeaf {
+  const { description, credentials: withCredentials = false } = options;
   const base: PersonLeaf = {
     '@type': 'Person',
     '@id': ids.person,
@@ -98,14 +106,18 @@ export function personNode(detail: 'full' | 'compact' = 'compact', description?:
     knowsAbout: topics.map((topic) =>
       topic.sameAs ? { '@type': 'Thing', name: topic.name, sameAs: topic.sameAs } : topic.name,
     ),
-    hasCredential: credentials.map((credential) => ({
-      '@type': 'EducationalOccupationalCredential',
-      name: credential.name,
-      credentialCategory: 'Training badge',
-      dateCreated: credential.issued,
-      url: credential.url,
-      recognizedBy: { '@type': 'Organization', name: credential.issuer },
-    })),
+    ...(withCredentials
+      ? {
+          hasCredential: credentials.map((credential) => ({
+            '@type': 'EducationalOccupationalCredential' as const,
+            name: credential.name,
+            credentialCategory: 'Training badge',
+            dateCreated: credential.issued,
+            url: credential.url,
+            recognizedBy: { '@type': 'Organization' as const, name: credential.issuer },
+          })),
+        }
+      : {}),
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'business inquiries',
@@ -135,19 +147,23 @@ export function companyNode(withRegistration = false): OrganizationLeaf {
   };
 }
 
-export function flavorgptNode(): WebApplicationLeaf {
+/** The product's identity wherever it is mentioned; its category and free tier on its own page, which states them. */
+export function flavorgptNode(detail: 'full' | 'compact' = 'compact'): WebApplicationLeaf {
   return {
     '@type': 'WebApplication',
     '@id': ids.flavorgpt,
     name: products.flavorgpt.name,
     url: products.flavorgpt.url,
     description: flavorgptProject.tagline,
-    applicationCategory: 'BusinessApplication',
-    operatingSystem: 'Any',
-    browserRequirements: 'Requires a modern web browser',
     creator: ref(ids.person),
     publisher: ref(ids.company),
-    offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD', description: 'Free tier' },
+    ...(detail === 'full'
+      ? {
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Any',
+          offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD', description: 'Free tier' },
+        }
+      : {}),
   };
 }
 
@@ -264,7 +280,7 @@ export function projectUrl(project: Project): string {
 }
 
 export function projectNode(project: Project): SoftwareSourceCodeLeaf | WebApplicationLeaf {
-  if (project.slug === 'flavorgpt') return flavorgptNode();
+  if (project.slug === 'flavorgpt') return flavorgptNode('full');
 
   const repo = repoSnapshot(project.repo);
   const license = project.detail?.licenseUrl ?? (repo?.license ? spdxUrl(repo.license) : undefined);
@@ -364,6 +380,8 @@ export interface PageGraphOptions extends WebPageOptions {
   fullPerson?: boolean;
   /** A bio of the person that this page prints word for word. */
   personDescription?: string;
+  /** Include his training badges, on the page that lists them. */
+  personCredentials?: boolean;
   /** Include the company's registration, on the page that prints it. */
   companyRegistration?: boolean;
   /** Further nodes for this page. */
@@ -372,10 +390,18 @@ export interface PageGraphOptions extends WebPageOptions {
 
 /** The graph for one page: the site, the person, the page, its breadcrumb, and anything page-specific. */
 export function pageGraph(options: PageGraphOptions): Graph {
-  const { trail, fullPerson = false, personDescription, companyRegistration = false, nodes = [], ...page } = options;
+  const {
+    trail,
+    fullPerson = false,
+    personDescription,
+    personCredentials,
+    companyRegistration = false,
+    nodes = [],
+    ...page
+  } = options;
   const graph: Thing[] = [
     websiteNode(),
-    personNode(fullPerson ? 'full' : 'compact', personDescription),
+    personNode(fullPerson ? 'full' : 'compact', { description: personDescription, credentials: personCredentials }),
     headshotNode(),
     companyNode(companyRegistration),
     webPageNode({ ...page, hasBreadcrumb: Boolean(trail?.length) }),
