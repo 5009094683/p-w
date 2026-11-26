@@ -1,54 +1,66 @@
-import fs from 'fs-extra'
-import { SITE_URL } from '../src/seo'
+/**
+ * Tells IndexNow (Bing, Yandex, Seznam, Naver and others) which pages changed.
+ * Run it after a production deploy:
+ *
+ *   pnpm build && pnpm indexnow            # submit
+ *   pnpm indexnow -- --dry-run             # show what would be submitted
+ *
+ * It submits only what is really live. Before it sends anything it checks that
+ * the key file is served on the production domain and that every page in the
+ * sitemap answers 200 there. Run against a domain that still serves the old
+ * site, it stops and submits nothing.
+ */
+import { readFile } from 'node:fs/promises';
+import { SITE } from '../src/data/site.ts';
 
-const HOST = new URL(SITE_URL).host
-const ENDPOINT = 'https://api.indexnow.org/indexnow'
+const ENDPOINT = 'https://api.indexnow.org/indexnow';
+const dryRun = process.argv.includes('--dry-run');
+const keyLocation = `${SITE.url}/${SITE.indexNowKey}.txt`;
 
-function extractUrls(sitemap: string) {
-  return Array.from(sitemap.matchAll(/<loc>([^<]+)<\/loc>/g), match => match[1])
-}
+async function main() {
+  const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8').catch(() => {
+    throw new Error('dist/sitemap.xml not found. Run "pnpm build" first.');
+  });
+  const urlList = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map((match) => match[1]!)
+    .filter((url) => !/\.(png|jpe?g|webp|avif|svg)$/.test(url));
+  if (urlList.length === 0) throw new Error('The sitemap lists no pages.');
 
-async function run() {
-  const keyFiles = await fs.readdir('public')
-  const keyFile = keyFiles.find(file => /^[a-f0-9]{32}\.txt$/i.test(file))
-  if (!keyFile)
-    throw new Error('No IndexNow key file found in public/<32-character-key>.txt')
+  const key = await fetch(keyLocation).then((response) => (response.ok ? response.text() : ''));
+  if (key.trim() !== SITE.indexNowKey) {
+    throw new Error(`The key file at ${keyLocation} is missing or does not match. Nothing was submitted.`);
+  }
 
-  const keyPath = `public/${keyFile}`
-  const expectedKey = keyFile.replace(/\.txt$/, '')
-  const key = (await fs.readFile(keyPath, 'utf-8')).trim()
-  if (!key)
-    throw new Error(`${keyPath} is empty`)
-  if (key !== expectedKey)
-    throw new Error(`${keyPath} must contain the same key as its filename`)
+  const notLive: string[] = [];
+  await Promise.all(
+    urlList.map(async (url) => {
+      const response = await fetch(url, { method: 'HEAD', redirect: 'manual' });
+      if (response.status !== 200) notLive.push(`${response.status} ${url}`);
+    }),
+  );
+  if (notLive.length > 0) {
+    throw new Error(
+      `These pages are not live on ${SITE.host} yet, so nothing was submitted:\n  ${notLive.join('\n  ')}`,
+    );
+  }
 
-  const sitemap = await fs.readFile('dist/sitemap.xml', 'utf-8')
-  const urlList = extractUrls(sitemap)
-
-  if (!urlList.length) {
-    console.log('No URLs found in dist/sitemap.xml')
-    return
+  if (dryRun) {
+    console.log(`Dry run. Would submit ${urlList.length} URLs:\n  ${urlList.join('\n  ')}`);
+    return;
   }
 
   const response = await fetch(ENDPOINT, {
     method: 'POST',
-    headers: {
-      'content-type': 'application/json; charset=utf-8',
-    },
-    body: JSON.stringify({
-      host: HOST,
-      key,
-      keyLocation: `${SITE_URL}/${keyFile}`,
-      urlList,
-    }),
-  })
-
+    headers: { 'content-type': 'application/json; charset=utf-8' },
+    body: JSON.stringify({ host: SITE.host, key: SITE.indexNowKey, keyLocation, urlList }),
+  });
   if (!response.ok) {
-    const body = await response.text()
-    throw new Error(`IndexNow submission failed: ${response.status} ${response.statusText}\n${body}`)
+    throw new Error(`IndexNow answered ${response.status} ${response.statusText}: ${await response.text()}`);
   }
-
-  console.log(`Submitted ${urlList.length} URLs to IndexNow`)
+  console.log(`Submitted ${urlList.length} URLs to IndexNow.`);
 }
 
-run()
+main().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+});

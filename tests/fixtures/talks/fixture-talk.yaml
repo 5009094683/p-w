@@ -1,0 +1,8 @@
+title: A fixture talk
+event: Fixture Conference
+eventUrl: https://conference.invalid/2026
+date: 2026-04-20
+location: Ahmedabad, India
+online: false
+slides: https://conference.invalid/2026/slides
+summary: A talk that exists only in the test suite, to check how a recorded talk is listed.

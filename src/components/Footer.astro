@@ -1,0 +1,87 @@
+---
+import Icon from '@/components/Icon.astro';
+import { footerNavigation, navigation, pages } from '@/data/pages.ts';
+import { linkById, person } from '@/data/profile.ts';
+import { SITE } from '@/data/site.ts';
+import { hasPosts } from '@/lib/posts.ts';
+
+const year = new Date().getUTCFullYear();
+const siteLinks = [...navigation, ...((await hasPosts()) ? [pages.posts] : []), ...footerNavigation];
+const profiles = ['github', 'linkedin', 'x', 'telegram', 'instagram'].map(linkById);
+const machine = [
+  { label: 'llms.txt', href: '/llms.txt' },
+  { label: 'Full text for LLMs', href: '/llms-full.txt' },
+  { label: 'profile.json', href: '/profile.json' },
+  { label: 'RSS feed', href: '/feed.xml' },
+  { label: 'Sitemap', href: '/sitemap.xml' },
+];
+---
+
+<footer class="mt-24 border-t border-line sm:mt-32">
+  <div class="shell grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <div>
+      <a href="/" class="signature-wrap rounded-sm" aria-label={`${person.name}, home`}>
+        <span class="signature"></span>
+      </a>
+      <p class="mt-5 max-w-xs text-[0.9375rem] text-muted">
+        {person.name}. {person.role}, building FlavorGPT. {person.location.label}.
+      </p>
+    </div>
+
+    <nav aria-label="Site">
+      <h2 class="eyebrow">Site</h2>
+      <ul class="mt-4 space-y-2.5 text-[0.9375rem]">
+        {
+          siteLinks.map((item) => (
+            <li>
+              <a href={item.path} class="link">{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-label="Profiles">
+      <h2 class="eyebrow">Elsewhere</h2>
+      <ul class="mt-4 space-y-2.5 text-[0.9375rem]">
+        {
+          profiles.map((link) => (
+            <li>
+              <a href={link.url} rel="me" class="link inline-flex items-center gap-2">
+                <Icon name={link.icon} size="0.9375rem" />
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-label="Machine-readable versions">
+      <h2 class="eyebrow">For machines</h2>
+      <ul class="mt-4 space-y-2.5 text-[0.9375rem]">
+        {
+          machine.map((item) => (
+            <li>
+              <a href={item.href} class="link">{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="shell flex flex-col gap-2 py-6 text-[0.8125rem] text-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>
+        © {year}
+        {person.name}. Text and images under
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license" class="link">CC BY-NC-SA 4.0</a>,
+        code under <a href={`${SITE.sourceRepo}/blob/main/LICENSE`} class="link">MIT</a>.
+      </p>
+      <p>
+        Static HTML on Cloudflare. <a href={SITE.sourceRepo} class="link">Source</a>.
+      </p>
+    </div>
+  </div>
+</footer>

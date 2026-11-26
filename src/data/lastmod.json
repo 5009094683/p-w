@@ -1,0 +1,82 @@
+{
+  "/": {
+    "hash": "b1504ba491a898f9",
+    "date": "2026-11-26"
+  },
+  "/about": {
+    "hash": "755e3ef65e6e992f",
+    "date": "2026-11-26"
+  },
+  "/services": {
+    "hash": "6f43fe736619a1f9",
+    "date": "2026-11-26"
+  },
+  "/projects": {
+    "hash": "c00b86beb00c52a2",
+    "date": "2026-11-26"
+  },
+  "/projects/feedback-flow": {
+    "hash": "af6a65dbc81d12a0",
+    "date": "2026-11-26"
+  },
+  "/projects/flavorgpt": {
+    "hash": "2c0dec3f602624a0",
+    "date": "2026-11-26"
+  },
+  "/projects/javagpt": {
+    "hash": "4f89d606b4db1e3c",
+    "date": "2026-11-26"
+  },
+  "/projects/master-ai-bot": {
+    "hash": "7dbd628fdf1a902d",
+    "date": "2026-11-26"
+  },
+  "/projects/osmo360": {
+    "hash": "3bee74eff7fa0717",
+    "date": "2026-11-26"
+  },
+  "/projects/public-api-scraper": {
+    "hash": "3bd395a8f72797e3",
+    "date": "2026-11-26"
+  },
+  "/projects/talk-with-pdf": {
+    "hash": "1a9df9fa5e55407a",
+    "date": "2026-11-26"
+  },
+  "/projects/tgmoji": {
+    "hash": "8b31da0380610141",
+    "date": "2026-11-26"
+  },
+  "/projects/ttweety-connect": {
+    "hash": "6b00f83a09ff8ea1",
+    "date": "2026-11-26"
+  },
+  "/projects/wa-contact": {
+    "hash": "8ee9f8e31e75c7b9",
+    "date": "2026-11-26"
+  },
+  "/projects/whatsapp-ai-bot": {
+    "hash": "47a637818062433c",
+    "date": "2026-11-26"
+  },
+  "/projects/xopenapi": {
+    "hash": "fb1eac7a9560681b",
+    "date": "2026-11-26"
+  },
+  "/speaking": {
+    "hash": "d525eed802ebb591",
+    "date": "2026-11-26"
+  },
+  "/contact": {
+    "hash": "70937af7ca56fa59",
+    "date": "2026-11-26"
+  },
+  "/press": {
+    "hash": "b5b2395e5ea7034a",
+    "date": "2026-11-26"
+  },
+  "/uses": {
+    "hash": "83933825c7593565",
+    "date": "2026-11-26"
+  }
+}

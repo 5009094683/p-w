@@ -1,0 +1,162 @@
+---
+import ContactBand from '@/components/ContactBand.astro';
+import Icon from '@/components/Icon.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { company, credentials, faqs, githubStats, linkById, milestones, person, products } from '@/data/profile.ts';
+import { formatLongDate, formatMonthYear } from '@/lib/format.ts';
+import { pageGraph, questionNodes } from '@/lib/schema.ts';
+
+const meta = pages.about;
+const stats = githubStats();
+const questions = faqs();
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  type: ['AboutPage', 'FAQPage'],
+  mainEntity: questionNodes(questions),
+  trail: [{ name: meta.label, path: meta.path }],
+  fullPerson: true,
+  personDescription: questions[0]!.answer,
+  personCredentials: true,
+});
+---
+
+<Base meta={meta} graph={graph} ogType="profile">
+  <PageHeader eyebrow="About" title={`About ${person.name}`}>
+    <p>
+      I am {person.givenName}. Online, almost everywhere, I am {person.alias}. I run {company.name}, I am building {
+        products.flavorgpt.name
+      }, and I work with founders who are taking a product to market.
+    </p>
+  </PageHeader>
+
+  <section class="shell" aria-labelledby="story">
+    <div class="grid gap-x-14 gap-y-8 lg:grid-cols-[16rem_minmax(0,1fr)]">
+      <h2 id="story" class="eyebrow pt-2">The short version</h2>
+      <div class="measure space-y-5 text-lg">
+        <p>
+          I am the founder and CEO of <a href={company.url} class="link">{company.name}</a>. We build technology across
+          artificial intelligence, machine learning and Web3: our own products, and specialized engineering work for
+          other companies. The company used to be called {company.formerName}.
+        </p>
+        <p>
+          What I am building now is <a href="/projects/flavorgpt" class="link">{products.flavorgpt.name}</a>. It began
+          with a simple frustration: every AI provider locks you into its own models and its own rules. So we built the
+          workspace we wanted, one that connects to your databases, APIs and files, lets you put several models side by
+          side in one conversation, and lets you stay anonymous while you do it.
+        </p>
+        <p>
+          Alongside the company I work directly with founders, on go-to-market, business development, token
+          generation events and how to put AI into a product. If that is where you are,
+          <a href="/services" class="link">this is how I can help</a>.
+        </p>
+        <p>
+          Dreaming up ideas and making them real is where my passion lies. A lot of what I build is public on GitHub,
+          and now and then I contribute to open-source and non-profit projects.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="timeline">
+    <SectionHeader eyebrow="Timeline" title="How I got here" id="timeline">
+      <p>Every date below comes from a public record, and each entry links to it.</p>
+    </SectionHeader>
+    <ol class="mt-10 border-t border-line">
+      {
+        milestones.map((milestone) => (
+          <li class="grid gap-x-10 gap-y-1 border-b border-line py-5 sm:grid-cols-[11rem_minmax(0,1fr)]">
+            <time datetime={milestone.date} class="text-sm font-medium text-muted sm:pt-0.5">
+              {formatMonthYear(milestone.date)}
+            </time>
+            <p>
+              {milestone.label}
+              <a href={milestone.source} class="link ml-1 whitespace-nowrap text-sm text-muted">Source</a>
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="github">
+    <div class="grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <SectionHeader eyebrow="On GitHub" title="Built in public" id="github" />
+      <div class="space-y-5 text-lg">
+        <p>
+          I have published code on <a href={linkById('github').url} class="link">GitHub</a> since {stats.since}, mostly
+          AI chatbots and developer tools. As of {stats.asOfLabel}, my projects had {stats.sentence}.
+        </p>
+        <p>
+          The best known are <a href="/projects/whatsapp-ai-bot" class="link">Whatsapp-Ai-BOT</a>,
+          <a href="/projects/master-ai-bot" class="link">Master AI BOT</a> and
+          <a href="/projects/talk-with-pdf" class="link">Talk with PDF</a>. More recent work includes
+          <a href="/projects/tgmoji" class="link">TGmoji</a>, a converter that runs entirely in the browser.
+        </p>
+        <p>
+          <a href="/projects" class="link font-medium">See all projects</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="training">
+    <SectionHeader eyebrow="Training" title="Courses I have completed" id="training">
+      <p>Each badge was issued in my name and can be verified on Credly.</p>
+    </SectionHeader>
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      {
+        credentials.map((credential) => (
+          <article class="card">
+            <h3 class="text-lg font-semibold leading-snug tracking-tight">
+              <a href={credential.url} class="stretched rounded-sm">{credential.name}</a>
+            </h3>
+            <p class="text-[0.9375rem] text-muted">
+              Training badge from {credential.issuer}, issued on
+              <time datetime={credential.issued}>{formatLongDate(credential.issued)}</time>.
+            </p>
+            <p class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium" data-md-skip>
+              Verify on Credly <Icon name="lucide:arrow-up-right" size="0.9375rem" />
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="outside">
+    <div class="grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <SectionHeader eyebrow="Away from the desk" title="Outside work" id="outside" />
+      <div class="space-y-5 text-lg">
+        <p>
+          I enjoy photography and travelling, usually on my own. I also love films, dramas and music.
+        </p>
+        <p>
+          I live in {person.location.label}. If you are nearby, reach out and let us have a coffee or work on something
+          together. The tools and gear I rely on are listed on the <a href="/uses" class="link">uses page</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="faq">
+    <SectionHeader eyebrow="Questions" title="Questions and answers" id="faq" />
+    <div class="mt-10 grid gap-x-14 gap-y-10 border-t border-line pt-10 md:grid-cols-2">
+      {
+        questions.map((item) => (
+          <div>
+            <h3 class="text-xl font-semibold tracking-tight">{item.question}</h3>
+            <p class="mt-3 text-muted">{item.answer}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <ContactBand title="Want to talk?" />
+</Base>

@@ -1,0 +1,274 @@
+---
+import { Picture } from 'astro:assets';
+import portrait from '@/assets/avatar.png';
+import Email from '@/components/Email.astro';
+import Icon from '@/components/Icon.astro';
+import Logo from '@/components/Logo.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import Signature from '@/components/Signature.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { bios, company, credentials, githubStats, linkById, person, products } from '@/data/profile.ts';
+import { SITE } from '@/data/site.ts';
+import { formatLongDate, formatMonthYear, formatNumber } from '@/lib/format.ts';
+import { repoSnapshot } from '@/lib/github.ts';
+import { getCoverage } from '@/lib/posts.ts';
+import { pageGraph } from '@/lib/schema.ts';
+
+const meta = pages.press;
+const bio = bios();
+const stats = githubStats();
+const coverage = await getCoverage();
+const whatsappBot = repoSnapshot('yesbhautik/Whatsapp-Ai-BOT')!;
+const masterBot = repoSnapshot('yesbhautik/Master-AI-BOT')!;
+
+const quickFacts: { label: string; value: string; href?: string }[] = [
+  { label: 'Name', value: person.name },
+  { label: 'Known online as', value: `${person.alias} (@${person.handle})` },
+  { label: 'Role', value: person.role },
+  { label: 'Company', value: `${company.name}, formerly ${company.formerName}`, href: company.url },
+  { label: 'Product', value: products.flavorgpt.name, href: products.flavorgpt.url },
+  { label: 'Based in', value: person.location.label },
+  { label: 'Website', value: SITE.host, href: '/' },
+  { label: 'GitHub', value: linkById('github').handle, href: linkById('github').url },
+  { label: 'X', value: linkById('x').handle, href: linkById('x').url },
+  { label: 'LinkedIn', value: linkById('linkedin').handle, href: linkById('linkedin').url },
+];
+
+const sourcedFacts: { fact: string; source: string; href: string }[] = [
+  {
+    fact: `${person.name} is the founder and CEO of ${company.name}.`,
+    source: 'GitHub profile',
+    href: linkById('github').url,
+  },
+  {
+    fact: `${company.name} was previously called ${company.formerName}. It builds its own products and provides engineering services in AI and machine learning, Web3, architecture planning and open-source management.`,
+    source: 'ybxlabs.com',
+    href: company.aboutUrl,
+  },
+  {
+    fact: `${company.name} is registered in India as an MSME under Udyam number ${company.udyam}.`,
+    source: 'ybxlabs.com',
+    href: company.url,
+  },
+  {
+    fact: `${products.flavorgpt.name} is a ${company.name} product. Its repository was started in ${formatMonthYear(products.flavorgpt.started)}, version 2.0 launched in August 2024 and version 2.5 in March 2026.`,
+    source: 'flavor-ai.tech',
+    href: 'https://flavor-ai.tech/i/about',
+  },
+  {
+    fact: `He joined GitHub in ${formatMonthYear(stats.sinceDate)}. As of ${stats.asOfLabel}, his projects had ${stats.sentence}.`,
+    source: 'GitHub',
+    href: linkById('github').url,
+  },
+  {
+    fact: `Whatsapp-Ai-BOT had ${formatNumber(whatsappBot.stars)} stars and ${formatNumber(whatsappBot.forks)} forks, and Master AI BOT had ${formatNumber(masterBot.stars)} stars and ${formatNumber(masterBot.forks)} forks, on the same date.`,
+    source: 'GitHub',
+    href: whatsappBot.url,
+  },
+  {
+    fact: `He holds ${credentials.length} AWS training badges, issued in July 2024: Machine Learning Foundations, Cloud Foundations and Introduction to Generative AI.`,
+    source: 'Credly',
+    href: credentials[0]!.url,
+  },
+];
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  trail: [{ name: meta.label, path: meta.path }],
+  fullPerson: true,
+  personDescription: bio.short,
+  companyRegistration: true,
+});
+---
+
+<Base meta={meta} graph={graph}>
+  <PageHeader eyebrow="Press kit" title="Press kit">
+    <p>
+      Everything needed to write about me or introduce me: the facts, bios in three lengths, a headshot and logos. You
+      are welcome to use this information and these images to present me.
+    </p>
+  </PageHeader>
+
+  <section class="shell" aria-labelledby="facts">
+    <div class="grid gap-x-14 gap-y-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div>
+        <h2 id="facts" class="eyebrow">At a glance</h2>
+        <table class="mt-5 w-full">
+          <caption class="sr-only">{person.name}: key facts</caption>
+          <thead class="sr-only">
+            <tr>
+              <th scope="col">Fact</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              quickFacts.map((fact) => (
+                <tr class="border-b border-line first:border-t">
+                  <th scope="row" class="w-2/5 py-3.5 pr-4 text-left align-top font-normal text-muted">
+                    {fact.label}
+                  </th>
+                  <td class="py-3.5 align-top font-medium [overflow-wrap:anywhere]">
+                    {fact.href ? (
+                      <a href={fact.href} class="link">{fact.value}</a>
+                    ) : (
+                      fact.value
+                    )}
+                  </td>
+                </tr>
+              ))
+            }
+            <tr class="border-b border-line">
+              <th scope="row" class="w-2/5 py-3.5 pr-4 text-left align-top font-normal text-muted">Email</th>
+              <td class="py-3.5 align-top font-medium [overflow-wrap:anywhere]"><Email /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure>
+        <Picture
+          src={portrait}
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          widths={[320, 480, 640]}
+          sizes="(min-width: 64rem) 20rem, (min-width: 40rem) 20rem, 90vw"
+          alt={`Portrait of ${person.name}`}
+          loading="lazy"
+          decoding="async"
+          class="aspect-square w-full max-w-80 rounded-[2rem] object-cover"
+          data-md-skip
+        />
+        <figcaption class="mt-4 text-[0.9375rem] text-muted">
+          <p>
+            <a href={person.headshot} class="link inline-flex items-center gap-1.5 font-medium text-ink" download
+              ><Icon name="lucide:download" size="1rem" />Download the headshot</a
+            >
+          </p>
+          <p class="mt-1">PNG, 1000 by 1000 pixels.</p>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="bios">
+    <SectionHeader eyebrow="Bios" title="Bios, in three lengths" id="bios">
+      <p>Written in the third person, ready to copy.</p>
+    </SectionHeader>
+    <div class="mt-10 grid gap-x-14 gap-y-10 border-t border-line pt-10 lg:grid-cols-[16rem_minmax(0,1fr)]">
+      <h3 class="eyebrow pt-1.5">One line</h3>
+      <p class="measure text-lg">{bio.oneLine}</p>
+
+      <h3 class="eyebrow pt-1.5">Short</h3>
+      <p class="measure text-lg">{bio.short}</p>
+
+      <h3 class="eyebrow pt-1.5">Long</h3>
+      <div class="measure space-y-4 text-lg">
+        {bio.long.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="sheet">
+    <SectionHeader eyebrow="Fact sheet" title="Facts, with sources" id="sheet">
+      <p>Each statement links to a public record where it can be checked.</p>
+    </SectionHeader>
+    <ul class="mt-10 border-t border-line">
+      {
+        sourcedFacts.map((item) => (
+          <li class="grid gap-x-10 gap-y-1 border-b border-line py-5 sm:grid-cols-[minmax(0,1fr)_9rem]">
+            <p>{item.fact}</p>
+            <p class="text-sm text-muted sm:pt-1 sm:text-right">
+              <span class="sm:sr-only">Source: </span>
+              <a href={item.href} class="link">{item.source}</a>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="marks">
+    <SectionHeader eyebrow="Logos" title="Monogram and signature" id="marks" />
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      <article class="card p-7">
+        <div class="flex h-40 items-center justify-center rounded-xl bg-paper" data-md-skip>
+          <Logo class="size-20" />
+        </div>
+        <h3 class="mt-2 text-xl font-semibold tracking-tight">Monogram</h3>
+        <p class="text-muted">The “B” mark used as the site icon.</p>
+        <ul class="flex flex-wrap gap-4 text-[0.9375rem] font-medium">
+          <li><a href="/logo.svg" class="link" download>Download SVG</a></li>
+          <li><a href="/logo.png" class="link" download>Download PNG</a></li>
+        </ul>
+      </article>
+      <article class="card p-7">
+        <div class="flex h-40 items-center justify-center rounded-xl bg-paper" data-md-skip>
+          <Signature class="scale-150" />
+        </div>
+        <h3 class="mt-2 text-xl font-semibold tracking-tight">Signature</h3>
+        <p class="text-muted">The handwritten “yesbhautik” wordmark, drawn for dark backgrounds.</p>
+        <ul class="flex flex-wrap gap-4 text-[0.9375rem] font-medium">
+          <li><a href="/sign.svg" class="link" download>Download SVG</a></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="style">
+    <div class="grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <SectionHeader eyebrow="Style" title="Names and spelling" id="style" />
+      <ul class="space-y-4 text-lg">
+        <li>The name is <strong class="font-semibold">{person.name}</strong>.</li>
+        <li>
+          The handle is <strong class="font-semibold">{person.handle}</strong>, in lower case. As a name it is written
+          {person.alias}.
+        </li>
+        <li>
+          The company is <strong class="font-semibold">{company.name}</strong>. Its former name, {company.formerName},
+          is one word.
+        </li>
+        <li>
+          The product is <strong class="font-semibold">{products.flavorgpt.name}</strong>, one word, with a capital F
+          and GPT in capitals.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {
+    coverage.length > 0 && (
+      <section class="shell mt-24 sm:mt-32" aria-labelledby="coverage">
+        <SectionHeader eyebrow="Coverage" title="In the press" id="coverage" />
+        <ul class="mt-10 border-t border-line">
+          {coverage.map((item) => (
+            <li class="grid gap-x-10 gap-y-1 border-b border-line py-5 sm:grid-cols-[11rem_minmax(0,1fr)]">
+              <time datetime={item.data.date.toISOString().slice(0, 10)} class="text-sm font-medium text-muted sm:pt-1">
+                {formatLongDate(item.data.date)}
+              </time>
+              <p>
+                <a href={item.data.url} class="link font-medium">{item.data.title}</a>
+                <span class="text-muted">, {item.data.outlet}</span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="usage">
+    <div class="rounded-3xl border border-line bg-surface px-6 py-12 sm:px-12 sm:py-16">
+      <h2 id="usage" class="display max-w-3xl text-[clamp(2rem,1.5rem+2.4vw,3.5rem)]">Using this material</h2>
+      <p class="mt-5 max-w-2xl text-lg text-muted">
+        The text and images on this site are licensed under
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="link">CC BY-NC-SA 4.0</a>. For interviews,
+        quotes or anything not covered here, write to <Email subject="Press inquiry" />.
+      </p>
+    </div>
+  </section>
+</Base>

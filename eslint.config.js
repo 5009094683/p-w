@@ -1,27 +1,24 @@
-// @ts-check
-/* eslint perfectionist/sort-objects: "error" */
-import antfu from '@antfu/eslint-config'
+import js from '@eslint/js';
+import astro from 'eslint-plugin-astro';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default antfu(
+export default defineConfig([
+  globalIgnores(['dist/', '.astro/', '.wrangler/', '.lighthouseci/', '.tmp/', 'node_modules/']),
+  js.configs.recommended,
+  tseslint.configs.recommended,
+  astro.configs.recommended,
   {
-    formatters: true,
-    pnpm: true,
+    languageOptions: { globals: { ...globals.node } },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
+    },
   },
-).removeRules(
-  'no-labels',
-  'no-lone-blocks',
-  'no-restricted-syntax',
-  'node/prefer-global/buffer',
-  'node/prefer-global/process',
-  'prefer-rest-params',
-  'symbol-description',
-  'ts/ban-types',
-  'ts/no-empty-object-type',
-  'ts/no-invalid-this',
-  'ts/no-unnecessary-type-constraint',
-  'vue/no-template-shadow',
-  'vue/no-v-text-v-html-on-component',
-  'e18e/prefer-static-regex',
-  'markdown/heading-increment',
-  'markdown/require-alt-text',
-)
+  {
+    files: ['**/*.cjs'],
+    languageOptions: { sourceType: 'commonjs' },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+]);

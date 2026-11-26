@@ -1,0 +1,30 @@
+---
+import type { Crumb } from '@/lib/schema.ts';
+
+interface Props {
+  /** Trail after "Home". The last crumb is the current page. */
+  trail: Crumb[];
+}
+
+const { trail } = Astro.props;
+const crumbs: Crumb[] = [{ name: 'Home', path: '/' }, ...trail];
+---
+
+<nav aria-label="Breadcrumb" data-md-skip>
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-muted">
+    {
+      crumbs.map((crumb, index) => (
+        <li class="flex items-center gap-2">
+          {index > 0 && <span aria-hidden="true">/</span>}
+          {index === crumbs.length - 1 ? (
+            <span aria-current="page" class="text-ink">
+              {crumb.name}
+            </span>
+          ) : (
+            <a href={crumb.path} class="link">{crumb.name}</a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

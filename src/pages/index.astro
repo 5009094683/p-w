@@ -1,0 +1,219 @@
+---
+import { Picture } from 'astro:assets';
+import portrait from '@/assets/avatar.png';
+import ContactBand from '@/components/ContactBand.astro';
+import Icon from '@/components/Icon.astro';
+import ProjectRow from '@/components/ProjectRow.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import Signature from '@/components/Signature.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { company, githubStats, linkById, links, person, products, services } from '@/data/profile.ts';
+import { featuredProjects } from '@/data/projects.ts';
+import { formatNumber } from '@/lib/format.ts';
+import { flavorgptNode, ids, pageGraph } from '@/lib/schema.ts';
+
+const meta = pages.home;
+const stats = githubStats();
+const profileLinks = links.filter((link) => link.group !== 'inactive');
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  type: 'ProfilePage',
+  mainEntity: ids.person,
+  fullPerson: true,
+  nodes: [flavorgptNode()],
+});
+---
+
+<Base meta={meta} graph={graph} ogType="profile">
+  <section class="shell pt-6 pb-16 sm:pt-12 sm:pb-24">
+    <div class="grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-center">
+      <div class="flex flex-col">
+        {/* The role sits above the name on screen and after it in the document, so the page opens with its h1. */}
+        <h1 class="display mt-4 text-[clamp(3.25rem,2rem+7vw,7rem)]">{person.name}</h1>
+        <p class="eyebrow order-first">{person.jobTitle}, {company.name}</p>
+        <p class="display mt-5 max-w-3xl text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] leading-[1.08]">
+          I build <em>AI products</em> and help founders take theirs to <span class="marker">market</span>.
+        </p>
+        <p class="mt-7 max-w-2xl text-lg text-muted sm:text-xl">
+          I am the founder and CEO of {company.name}, where I am building {products.flavorgpt.name}, an AI workspace
+          that works with your tools and not just your prompts. I also work directly with founders on go-to-market,
+          business development and token generation events.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3" data-md-skip>
+          <a href="/contact" class="btn btn-primary">
+            <Icon name="lucide:calendar" size="1rem" />
+            Book a call
+          </a>
+          <a href="/projects" class="btn btn-ghost">See the projects</a>
+        </div>
+      </div>
+
+      <figure class="relative order-first w-28 lg:order-none lg:w-full" data-md-skip>
+        <Picture
+          src={portrait}
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          widths={[224, 336, 448, 672]}
+          sizes="(min-width: 64rem) 21rem, 7rem"
+          alt={`Portrait of ${person.name}`}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-square w-full rounded-full object-cover lg:rounded-[2.25rem]"
+        />
+        <Signature class="absolute -bottom-9 -left-10 hidden -rotate-6 text-ink lg:inline-block" />
+      </figure>
+    </div>
+  </section>
+
+  <section class="shell" aria-labelledby="now">
+    <h2 id="now" class="eyebrow">What I do now</h2>
+    <div class="mt-5 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-3">
+      <article class="relative flex flex-col gap-3 bg-surface p-7">
+        <h3 class="display text-3xl">
+          <a href={company.url} class="stretched rounded-sm">{company.name}</a>
+        </h3>
+        <p class="text-muted">
+          The company I founded and run. We build technology across AI, machine learning and Web3: our own products,
+          and engineering work for other companies.
+        </p>
+        <p class="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-medium" data-md-skip>
+          ybxlabs.com <Icon name="lucide:arrow-up-right" size="0.9375rem" />
+        </p>
+      </article>
+      <article class="relative flex flex-col gap-3 bg-surface p-7">
+        <h3 class="display text-3xl">
+          <a href="/projects/flavorgpt" class="stretched rounded-sm">{products.flavorgpt.name}</a>
+        </h3>
+        <p class="text-muted">
+          The product I am building now: an AI workspace that connects to your databases, APIs and files, and puts
+          many models behind one conversation.
+        </p>
+        <p class="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-medium" data-md-skip>
+          About FlavorGPT <Icon name="lucide:arrow-right" size="0.9375rem" />
+        </p>
+      </article>
+      <article class="relative flex flex-col gap-3 bg-surface p-7">
+        <h3 class="display text-3xl">
+          <a href="/services" class="stretched rounded-sm">Advisory</a>
+        </h3>
+        <p class="text-muted">
+          Direct work with founders on go-to-market, business development, token generation events and AI product
+          strategy.
+        </p>
+        <p class="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-medium" data-md-skip>
+          How I can help <Icon name="lucide:arrow-right" size="0.9375rem" />
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="numbers">
+    <SectionHeader eyebrow="On GitHub" title="Built in public" id="numbers">
+      <p>
+        I have published code on GitHub since {stats.since}. These are the totals across the public repositories I
+        created, as counted on {stats.asOfLabel}.
+      </p>
+    </SectionHeader>
+    <ul class="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 border-y border-line py-10 lg:grid-cols-4">
+      <li>
+        <strong class="display block text-[clamp(3rem,2rem+4vw,5.5rem)] font-normal">{formatNumber(stats.stars)}</strong>
+        <span class="mt-2 block text-sm text-muted">stars on GitHub</span>
+      </li>
+      <li>
+        <strong class="display block text-[clamp(3rem,2rem+4vw,5.5rem)] font-normal">{formatNumber(stats.forks)}</strong>
+        <span class="mt-2 block text-sm text-muted">forks by other developers</span>
+      </li>
+      <li>
+        <strong class="display block text-[clamp(3rem,2rem+4vw,5.5rem)] font-normal"
+          >{formatNumber(stats.sourceRepos)}</strong
+        >
+        <span class="mt-2 block text-sm text-muted">public source repositories</span>
+      </li>
+      <li>
+        <strong class="display block text-[clamp(3rem,2rem+4vw,5.5rem)] font-normal">{stats.since}</strong>
+        <span class="mt-2 block text-sm text-muted">the year I joined GitHub</span>
+      </li>
+    </ul>
+    <p class="mt-5 text-sm text-muted">
+      Source: <a href={linkById('github').url} class="link">github.com/yesbhautik</a>.
+    </p>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="work">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <SectionHeader eyebrow="Selected work" title="Projects" id="work" />
+      <a href="/projects" class="link text-[0.9375rem] font-medium" data-md-skip>All projects</a>
+    </div>
+    <div class="mt-8 border-b border-line">
+      {featuredProjects.map((project) => <ProjectRow project={project} />)}
+    </div>
+    <p class="mt-5 text-sm text-muted">
+      See <a href="/projects" class="link">all projects</a>, with their stars, forks and licenses.
+    </p>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="advisory">
+    <SectionHeader eyebrow="Advisory" title="Work with me" id="advisory">
+      <p>
+        Alongside the company, I work with founders one to one, on these four subjects.
+      </p>
+    </SectionHeader>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+      {
+        services.map((service) => (
+          <article class="card">
+            <h3 class="text-xl font-semibold tracking-tight">
+              <a href={`/services#${service.id}`} class="stretched rounded-sm">{service.name}</a>
+            </h3>
+            <p class="text-muted">{service.summary}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-6 text-muted">
+      I also <a href="/speaking" class="link">speak at events</a>, in person and online.
+    </p>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="about">
+    <div class="grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <SectionHeader eyebrow="About" title="A little more about me" id="about" />
+      <div class="space-y-5 text-lg">
+        <p>
+          Dreaming up ideas and making them real is where my passion lies. A lot of what I build is public on GitHub,
+          and now and then I contribute to open-source and non-profit projects.
+        </p>
+        <p>
+          Outside work I enjoy photography and travelling, usually solo, along with films, dramas and music. I live in
+          {person.location.label}. If you are nearby, reach out and let us have a coffee or work on something together.
+        </p>
+        <p>
+          <a href="/about" class="link font-medium">Read the full story</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="find-me">
+    <h2 id="find-me" class="eyebrow">Find me</h2>
+    <ul class="mt-5 flex flex-wrap gap-3">
+      {
+        profileLinks.map((link) => (
+          <li>
+            <a href={link.url} rel="me" class="btn btn-ghost">
+              <Icon name={link.icon} size="1rem" />
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <ContactBand />
+</Base>

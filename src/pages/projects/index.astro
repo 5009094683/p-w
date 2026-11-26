@@ -1,0 +1,58 @@
+---
+import ContactBand from '@/components/ContactBand.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import ProjectRow from '@/components/ProjectRow.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { githubStats, linkById } from '@/data/profile.ts';
+import { projectGroups, projects } from '@/data/projects.ts';
+import { absoluteUrl } from '@/data/site.ts';
+import { pageGraph, projectListNode } from '@/lib/schema.ts';
+
+const meta = pages.projects;
+const stats = githubStats();
+const groups = projectGroups
+  .map((group) => ({ ...group, items: projects.filter((project) => project.group === group.id) }))
+  .filter((group) => group.items.length > 0);
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  type: 'CollectionPage',
+  mainEntity: `${absoluteUrl(meta.path)}#list`,
+  trail: [{ name: meta.label, path: meta.path }],
+  nodes: [projectListNode()],
+});
+---
+
+<Base meta={meta} graph={graph}>
+  <PageHeader eyebrow="Projects" title="Projects">
+    <p>
+      The product I am building at YBX Labs, and the public projects I publish and maintain on
+      <a href={linkById('github').url} class="link">GitHub</a>.
+    </p>
+    <p class="text-base">
+      As of {stats.asOfLabel}, those projects had {stats.sentence}. Every number on this page was read from GitHub on
+      that date.
+    </p>
+  </PageHeader>
+
+  {
+    groups.map((group) => (
+      <section class="shell mt-16 first-of-type:mt-0 sm:mt-24" aria-labelledby={`group-${group.id}`}>
+        <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+          <h2 id={`group-${group.id}`} class="eyebrow">
+            {group.label}
+          </h2>
+          <p class="text-sm text-muted">{group.description}</p>
+        </div>
+        <div class="mt-4 border-b border-line">
+          {group.items.map((project) => <ProjectRow project={project} />)}
+        </div>
+      </section>
+    ))
+  }
+
+  <ContactBand title="Building something similar?" />
+</Base>

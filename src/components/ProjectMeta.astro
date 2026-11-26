@@ -1,0 +1,42 @@
+---
+import Icon from '@/components/Icon.astro';
+import type { Project } from '@/data/projects.ts';
+import { formatNumber, yearOf } from '@/lib/format.ts';
+import { repoSnapshot, showsCounts } from '@/lib/github.ts';
+
+interface Props {
+  project: Project;
+  class?: string;
+}
+
+const { project, class: className } = Astro.props;
+const repo = repoSnapshot(project.repo);
+const license = project.detail?.licenseNote ?? repo?.license;
+const counted = showsCounts(repo);
+
+// Each part reads as plain text ("282 stars"); the unit is hidden where an icon shows it.
+const parts: { icon?: string; value: string; unit?: string }[] = repo
+  ? [
+      ...(counted ? [{ icon: 'lucide:star', value: formatNumber(repo.stars), unit: 'stars' }] : []),
+      ...(counted ? [{ icon: 'lucide:git-fork', value: formatNumber(repo.forks), unit: 'forks' }] : []),
+      ...(repo.language ? [{ value: repo.language }] : []),
+      ...(license ? [{ value: license }] : []),
+      { value: String(yearOf(repo.createdAt)) },
+    ]
+  : [{ value: 'A YBX Labs product' }];
+
+// Read aloud, and in the Markdown version, the parts form a list: "282 stars, 240 forks, JavaScript".
+const suffix = (part: (typeof parts)[number], index: number) =>
+  `${part.unit ? ` ${part.unit}` : ''}${index < parts.length - 1 ? ',' : ''}`;
+---
+
+<p class:list={['flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted', className]}>
+  {
+    parts.map((part, index) => (
+      <span class="inline-flex items-center gap-1.5">
+        {part.icon && <Icon name={part.icon} size="0.875rem" />}
+        <span>{part.value}<span class="sr-only">{suffix(part, index)}</span></span>
+      </span>
+    ))
+  }
+</p>

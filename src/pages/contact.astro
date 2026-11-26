@@ -1,0 +1,165 @@
+---
+import Email from '@/components/Email.astro';
+import Icon from '@/components/Icon.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { booking, company, links, person, support } from '@/data/profile.ts';
+import { ids, pageGraph } from '@/lib/schema.ts';
+
+const meta = pages.contact;
+const sessions = [booking.quickChat, booking.consultation];
+const messaging = links.filter((link) => link.group === 'messaging');
+const profiles = links.filter((link) => link.group === 'profile');
+const inactive = links.filter((link) => link.group === 'inactive');
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  type: 'ContactPage',
+  mainEntity: ids.person,
+  trail: [{ name: meta.label, path: meta.path }],
+  fullPerson: true,
+});
+---
+
+<Base meta={meta} graph={graph}>
+  <PageHeader eyebrow="Contact" title="Let’s talk">
+    <p>
+      Many people want to start something, or contribute to something, and are not sure where to begin. I struggled
+      with that too. So the invitation is open: if you are curious about startups, business or open source, or you
+      already have a project and a question, book a chat.
+    </p>
+  </PageHeader>
+
+  <section class="shell" aria-labelledby="book">
+    <h2 id="book" class="eyebrow">Book time</h2>
+    <div class="mt-5 grid gap-5 md:grid-cols-2">
+      {
+        sessions.map((session) => (
+          <article class="card gap-4 p-7">
+            <h3 class="display text-4xl">
+              <a href={session.url} class="stretched rounded-sm">{session.name}</a>
+            </h3>
+            <p class="eyebrow order-first">
+              {session.duration}, over {session.medium}
+            </p>
+            <p class="text-muted">{session.summary}</p>
+            <p class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium" data-md-skip>
+              Book on Cal.com <Icon name="lucide:arrow-up-right" size="0.9375rem" />
+            </p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-6 max-w-2xl text-muted">
+      I value my time, and I am sure you value yours, so please come with some research and your questions in mind. I
+      may not see every request straight away: if a booking has not been accepted, I have probably missed it, so do
+      book another slot.
+    </p>
+  </section>
+
+  <section class="shell mt-20 sm:mt-28" aria-labelledby="write">
+    <div class="grid gap-x-14 gap-y-12 lg:grid-cols-2">
+      <div>
+        <h2 id="write" class="eyebrow">Write to me</h2>
+        <p class="display mt-5 text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] [overflow-wrap:anywhere]">
+          <Email class="link" />
+        </p>
+        <p class="mt-5 max-w-md text-muted">
+          Email is best for anything that needs detail: a project, an invitation to speak, or a question from the press.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="eyebrow">Message me</h2>
+        <ul class="mt-5 border-t border-line">
+          {
+            messaging.map((link) => (
+              <li class="border-b border-line">
+                <a href={link.url} rel="me" class="group flex items-center justify-between gap-4 py-4">
+                  <span class="flex items-center gap-3 font-medium">
+                    <Icon name={link.icon} size="1.125rem" />
+                    {link.label}
+                  </span>
+                  <span class="link text-[0.9375rem] text-muted group-hover:text-accent-ink">{link.handle}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-20 sm:mt-28" aria-labelledby="profiles">
+    <div class="grid gap-x-14 gap-y-12 lg:grid-cols-2">
+      <div>
+        <h2 id="profiles" class="eyebrow">Where I am active</h2>
+        <ul class="mt-5 border-t border-line">
+          {
+            profiles.map((link) => (
+              <li class="border-b border-line">
+                <a href={link.url} rel="me" class="group flex items-center justify-between gap-4 py-4">
+                  <span class="flex items-center gap-3 font-medium">
+                    <Icon name={link.icon} size="1.125rem" />
+                    {link.label}
+                  </span>
+                  <span class="link text-[0.9375rem] text-muted group-hover:text-accent-ink">{link.handle}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="eyebrow">Where I have a profile but rarely post</h2>
+        <ul class="mt-5 border-t border-line">
+          {
+            inactive.map((link) => (
+              <li class="border-b border-line">
+                <a href={link.url} rel="me" class="group flex items-center justify-between gap-4 py-4">
+                  <span class="flex items-center gap-3 font-medium">
+                    <Icon name={link.icon} size="1.125rem" />
+                    {link.label}
+                  </span>
+                  <span class="link text-[0.9375rem] text-muted group-hover:text-accent-ink">{link.handle}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell mt-20 sm:mt-28" aria-labelledby="other">
+    <h2 id="other" class="eyebrow">Other routes</h2>
+    <div class="mt-5 grid gap-5 md:grid-cols-3">
+      <article class="card">
+        <h3 class="text-xl font-semibold tracking-tight">
+          <a href={company.contactUrl} class="stretched rounded-sm">Work with {company.name}</a>
+        </h3>
+        <p class="text-muted">For a project that needs the engineering team, contact the company directly.</p>
+      </article>
+      <article class="card">
+        <h3 class="text-xl font-semibold tracking-tight">
+          <a href="/speaking" class="stretched rounded-sm">Invite me to speak</a>
+        </h3>
+        <p class="text-muted">Topics, formats and the practical details for conferences and meetups.</p>
+      </article>
+      <article class="card">
+        <h3 class="text-xl font-semibold tracking-tight">
+          <a href={support.sponsors} class="stretched rounded-sm">Sponsor my open-source work</a>
+        </h3>
+        <p class="text-muted">Support the public projects through GitHub Sponsors.</p>
+      </article>
+    </div>
+    <p class="mt-8 max-w-2xl text-sm text-muted">
+      {person.givenName} is based in {person.location.label}. The open invitation on this page was inspired by
+      <a href="https://roe.dev/blog/open-invitation" class="link">Daniel Roe’s open invitation</a>.
+    </p>
+  </section>
+</Base>
