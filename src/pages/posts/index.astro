@@ -1,0 +1,83 @@
+---
+import PageHeader from '@/components/PageHeader.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { formatLongDate } from '@/lib/format.ts';
+import { getPosts, postPath } from '@/lib/posts.ts';
+import { pageGraph } from '@/lib/schema.ts';
+
+const meta = pages.posts;
+const posts = await getPosts();
+const empty = posts.length === 0;
+
+const feeds = [
+  { label: 'RSS', href: '/feed.xml' },
+  { label: 'Atom', href: '/feed.atom' },
+  { label: 'JSON Feed', href: '/feed.json' },
+];
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  type: ['CollectionPage', 'Blog'],
+  trail: [{ name: meta.label, path: meta.path }],
+});
+---
+
+{/* With nothing published, the page stays out of search results and the sitemap. */}
+<Base meta={meta} graph={empty ? undefined : graph} noindex={empty}>
+  <PageHeader eyebrow="Writing" title="Writing">
+    <p>
+      Articles on building AI products, startups, go-to-market and Web3.
+    </p>
+  </PageHeader>
+
+  <section class="shell" aria-label="Articles">
+    {
+      empty ? (
+        <div class="measure space-y-5 text-lg">
+          <p>Nothing has been published here yet.</p>
+          <p class="text-muted">
+            The feeds are already live, so a reader that subscribes now will receive the first article when it is
+            published. Until then, the <a href="/projects" class="link">projects</a> are the best record of what I am
+            working on.
+          </p>
+        </div>
+      ) : (
+        <div class="border-b border-line">
+          {posts.map((post) => (
+            <article class="relative grid gap-x-10 gap-y-2 border-t border-line py-7 sm:grid-cols-[11rem_minmax(0,1fr)]">
+              <time datetime={post.data.date.toISOString()} class="text-sm font-medium text-muted sm:pt-2">
+                {formatLongDate(post.data.date)}
+              </time>
+              <div>
+                <h2 class="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)]">
+                  <a href={postPath(post)} class="stretched rounded-sm">
+                    {post.data.title}
+                  </a>
+                </h2>
+                <p class="mt-2 max-w-2xl text-muted">{post.data.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </section>
+
+  <section class="shell mt-16" aria-labelledby="subscribe">
+    <h2 id="subscribe" class="eyebrow">Subscribe</h2>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {
+        feeds.map((feed) => (
+          <li>
+            <a href={feed.href} class="btn btn-ghost">
+              {feed.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

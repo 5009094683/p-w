@@ -1,0 +1,136 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ContactBand from '@/components/ContactBand.astro';
+import Base from '@/layouts/Base.astro';
+import { pages, withAuthor, type PageMeta } from '@/data/pages.ts';
+import { person } from '@/data/profile.ts';
+import { formatLongDate } from '@/lib/format.ts';
+import { getPosts, postPath, type Post } from '@/lib/posts.ts';
+import { blogPostingNode, pageGraph } from '@/lib/schema.ts';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    // Posts are sorted newest first, so the next one down the list is the older one.
+    props: { post, newer: posts[index - 1], older: posts[index + 1] },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+const path = postPath(post);
+const updated = post.data.updated;
+const minutes = Math.max(1, Math.round((post.body ?? '').split(/\s+/).filter(Boolean).length / 220));
+
+const meta: PageMeta = {
+  path,
+  label: post.data.title,
+  title: withAuthor(post.data.title),
+  description: post.data.description,
+  ogKicker: 'Writing',
+  ogTitle: post.data.title,
+};
+
+const trail = [
+  { name: pages.posts.label, path: pages.posts.path },
+  { name: post.data.title, path },
+];
+
+const graph = pageGraph({
+  path,
+  title: meta.title,
+  description: meta.description,
+  mainEntity: `${Astro.site!.origin}${path}#article`,
+  trail,
+  datePublished: post.data.date.toISOString(),
+  dateModified: (updated ?? post.data.date).toISOString(),
+  nodes: [
+    blogPostingNode({
+      path,
+      title: post.data.title,
+      description: post.data.description,
+      published: post.data.date,
+      updated,
+      tags: post.data.tags,
+    }),
+  ],
+});
+---
+
+<Base
+  meta={meta}
+  graph={graph}
+  ogType="article"
+  article={{ published: post.data.date, updated, tags: post.data.tags }}
+>
+  <article>
+    <header class="shell pt-8 pb-10 sm:pt-14 sm:pb-12">
+      <Breadcrumbs trail={trail} />
+      <h1 class="display mt-5 max-w-4xl text-[clamp(2.5rem,1.8rem+3.6vw,4.5rem)]">{post.data.title}</h1>
+      <p class="mt-6 max-w-2xl text-lg text-muted sm:text-xl">{post.data.description}</p>
+      <p class="mt-6 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
+        <span>By <a href="/about" class="link" rel="author">{person.name}</a></span>
+        <span aria-hidden="true">/</span>
+        <time datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+        {
+          updated && (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>
+                Updated <time datetime={updated.toISOString()}>{formatLongDate(updated)}</time>
+              </span>
+            </>
+          )
+        }
+        <span aria-hidden="true">/</span>
+        <span>{minutes} min read</span>
+      </p>
+    </header>
+
+    <div class="shell">
+      <div class="prose text-lg">
+        <Content />
+      </div>
+
+      {
+        post.data.tags.length > 0 && (
+          <ul class="mt-12 flex flex-wrap gap-2" aria-label="Topics">
+            {post.data.tags.map((tag) => (
+              <li class="tag">{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </article>
+
+  {
+    (newer || older) && (
+      <nav class="shell mt-20 grid gap-5 sm:grid-cols-2" aria-label="More writing">
+        {older && (
+          <a href={postPath(older)} class="card">
+            <span class="eyebrow">Earlier</span>
+            <span class="text-xl font-semibold tracking-tight">{older.data.title}</span>
+          </a>
+        )}
+        {newer && (
+          <a href={postPath(newer)} class="card sm:col-start-2">
+            <span class="eyebrow">Later</span>
+            <span class="text-xl font-semibold tracking-tight">{newer.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )
+  }
+
+  <ContactBand title="Want to talk about this?" />
+</Base>

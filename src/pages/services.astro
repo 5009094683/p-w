@@ -1,0 +1,127 @@
+---
+import ContactBand from '@/components/ContactBand.astro';
+import Icon from '@/components/Icon.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { booking, company, services } from '@/data/profile.ts';
+import { pageGraph, serviceNodes } from '@/lib/schema.ts';
+
+const meta = pages.services;
+const sessions = [booking.quickChat, booking.consultation];
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  trail: [{ name: meta.label, path: meta.path }],
+  nodes: serviceNodes(),
+});
+---
+
+<Base meta={meta} graph={graph}>
+  <PageHeader eyebrow="Services" title="Work with me">
+    <p>
+      I work with founders one to one on four subjects: go-to-market, business development, token generation events
+      and AI product strategy. I am based in India and work remotely, so where you are does not matter.
+    </p>
+  </PageHeader>
+
+  <section class="shell" aria-labelledby="subjects">
+    <h2 id="subjects" class="sr-only">What I can help with</h2>
+    <div class="border-b border-line">
+      {
+        services.map((service, index) => (
+          <article
+            id={service.id}
+            class="grid scroll-mt-8 gap-x-14 gap-y-4 border-t border-line py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"
+          >
+            <div>
+              <p class="eyebrow tabular-nums" data-md-skip>
+                {String(index + 1).padStart(2, '0')}
+              </p>
+              <h3 class="display mt-3 text-[clamp(1.875rem,1.5rem+1.6vw,2.75rem)]">{service.name}</h3>
+            </div>
+            <p class="text-lg">{service.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="how">
+    <SectionHeader eyebrow="How it works" title="Two ways to start" id="how">
+      <p>
+        I keep the first conversation easy and open. If you come with a little research and a clear question, we will
+        get much further.
+      </p>
+    </SectionHeader>
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      {
+        sessions.map((session) => (
+          <article class="card gap-4 p-7">
+            <p class="eyebrow">
+              {session.duration}, over {session.medium}
+            </p>
+            <h3 class="display text-4xl">
+              <a href={session.url} class="stretched rounded-sm">
+                {session.name}
+              </a>
+            </h3>
+            <p class="text-muted">{session.summary}</p>
+            <p class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium" data-md-skip>
+              Book on Cal.com <Icon name="lucide:arrow-up-right" size="0.9375rem" />
+            </p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-6 max-w-2xl text-muted">
+      I may not see every request straight away. If a booking has not been accepted, I have probably missed it, so do
+      book another slot.
+    </p>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="team">
+    <SectionHeader eyebrow={company.name} title="Need a team to build it?" id="team">
+      <p>
+        Advice is one thing; delivery is another. When a project needs engineers, that work goes through
+        <a href={company.url} class="link">{company.name}</a>, the company I run. These are its services.
+      </p>
+    </SectionHeader>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+      {
+        company.services.map((service) => (
+          <article class="card">
+            <h3 class="text-xl font-semibold tracking-tight">
+              <a href={service.url} class="stretched rounded-sm">
+                {service.name}
+              </a>
+            </h3>
+            <p class="text-muted">{service.summary}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-6 text-muted">
+      To start a project with the team, <a href={company.contactUrl} class="link">contact {company.name}</a>.
+    </p>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="events">
+    <div class="grid gap-x-14 gap-y-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <SectionHeader eyebrow="Events" title="Talks and workshops" id="events" />
+      <div class="space-y-5 text-lg">
+        <p>
+          I also speak at business, technology and entrepreneurship events, in person and online.
+        </p>
+        <p>
+          <a href="/speaking" class="link font-medium">Invite me to speak</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <ContactBand title="Tell me what you are working on." />
+</Base>

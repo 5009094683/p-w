@@ -1,0 +1,140 @@
+---
+import Email from '@/components/Email.astro';
+import Icon from '@/components/Icon.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { bios, person, speaking } from '@/data/profile.ts';
+import { formatLongDate } from '@/lib/format.ts';
+import { getTalks } from '@/lib/posts.ts';
+import { pageGraph, talkNode } from '@/lib/schema.ts';
+
+const meta = pages.speaking;
+const talks = await getTalks();
+const bio = bios();
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  trail: [{ name: meta.label, path: meta.path }],
+  fullPerson: true,
+  personDescription: bio.short,
+  // Events are published only for talks that are on record in src/content/talks.
+  nodes: talks.map((talk) => talkNode({ id: talk.id, ...talk.data })),
+});
+---
+
+<Base meta={meta} graph={graph}>
+  <PageHeader eyebrow="Speaking" title="Invite me to speak">
+    <p>
+      If you are organizing a business, technology or entrepreneurship conference or meetup, I would be happy to give a
+      talk or run a session.
+    </p>
+  </PageHeader>
+
+  <section class="shell" aria-labelledby="topics">
+    <div class="grid gap-x-14 gap-y-10 lg:grid-cols-2">
+      <div>
+        <h2 id="topics" class="eyebrow">What I talk about</h2>
+        <ul class="mt-5 border-t border-line">
+          {
+            speaking.topics.map((topic) => (
+              <li class="display border-b border-line py-4 text-[clamp(1.5rem,1.25rem+1vw,2rem)]">{topic}</li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h2 class="eyebrow">Formats</h2>
+        <ul class="mt-5 flex flex-wrap gap-2">
+          {speaking.formats.map((format) => <li class="tag text-[0.9375rem]">{format}</li>)}
+        </ul>
+
+        <h2 class="eyebrow mt-12">Practical details</h2>
+        <ul class="mt-5 space-y-3">
+          {
+            speaking.terms.map((term) => (
+              <li class="flex gap-3">
+                <Icon name="lucide:check" size="1.125rem" class="mt-1.5 shrink-0 text-muted" />
+                <span>{term}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {
+    talks.length > 0 && (
+      <section class="shell mt-24 sm:mt-32" aria-labelledby="talks">
+        <SectionHeader eyebrow="Talks" title="Where I have spoken" id="talks" />
+        <ol class="mt-10 border-t border-line">
+          {talks.map((talk) => (
+            <li class="grid gap-x-10 gap-y-1 border-b border-line py-5 sm:grid-cols-[11rem_minmax(0,1fr)]">
+              <time datetime={talk.data.date.toISOString().slice(0, 10)} class="text-sm font-medium text-muted sm:pt-1">
+                {formatLongDate(talk.data.date)}
+              </time>
+              <div>
+                <h3 class="text-xl font-semibold tracking-tight">{talk.data.title}</h3>
+                <p class="mt-1 text-muted">
+                  {talk.data.eventUrl ? (
+                    <a href={talk.data.eventUrl} class="link">
+                      {talk.data.event}
+                    </a>
+                  ) : (
+                    talk.data.event
+                  )}
+                  , {talk.data.location}
+                </p>
+                {talk.data.summary && <p class="mt-2">{talk.data.summary}</p>}
+                {(talk.data.recording || talk.data.slides) && (
+                  <ul class="mt-2 flex flex-wrap gap-4 text-[0.9375rem]">
+                    {talk.data.recording && (
+                      <li>
+                        <a href={talk.data.recording} class="link">
+                          Recording
+                        </a>
+                      </li>
+                    )}
+                    {talk.data.slides && (
+                      <li>
+                        <a href={talk.data.slides} class="link">
+                          Slides
+                        </a>
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="intro">
+    <SectionHeader eyebrow="For organizers" title="How to introduce me" id="intro">
+      <p>Use this as it is, or shorten it to fit your program.</p>
+    </SectionHeader>
+    <blockquote class="mt-8 max-w-3xl rounded-2xl border border-line bg-surface p-7 text-lg">
+      <p>{bio.short}</p>
+    </blockquote>
+    <p class="mt-6 max-w-2xl text-muted">
+      A headshot, longer and shorter bios, and logos are in the <a href="/press" class="link">press kit</a>.
+    </p>
+  </section>
+
+  <section class="shell mt-24 sm:mt-32" aria-labelledby="invite">
+    <div class="rounded-3xl border border-line bg-surface px-6 py-12 sm:px-12 sm:py-16">
+      <h2 id="invite" class="display max-w-3xl text-[clamp(2rem,1.5rem+2.4vw,3.5rem)]">Planning an event?</h2>
+      <p class="mt-5 max-w-2xl text-lg text-muted">
+        Write to me at <Email subject={`Speaking invitation for ${person.name}`} /> with the event, the date, the
+        audience and the topic you have in mind. I look forward to it.
+      </p>
+    </div>
+  </section>
+</Base>

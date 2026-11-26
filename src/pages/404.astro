@@ -1,0 +1,31 @@
+---
+import Base from '@/layouts/Base.astro';
+import { navigation, pages } from '@/data/pages.ts';
+
+const meta = pages.notFound;
+---
+
+<Base meta={meta}>
+  <section class="shell pt-12 pb-8 sm:pt-24">
+    <p class="eyebrow">Error 404</p>
+    <h1 class="display mt-5 max-w-4xl text-[clamp(3rem,2rem+6vw,6.5rem)]">
+      This page does <span class="marker">not</span> exist.
+    </h1>
+    <p class="mt-7 max-w-2xl text-lg text-muted sm:text-xl">
+      The address may be mistyped, or the page may have been removed when the site was rebuilt. Everything that is here
+      can be reached from the links below.
+    </p>
+    <ul class="mt-9 flex flex-wrap gap-3">
+      <li><a href="/" class="btn btn-primary">Go to the home page</a></li>
+      {
+        navigation.map((item) => (
+          <li>
+            <a href={item.path} class="btn btn-ghost">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

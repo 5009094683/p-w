@@ -1,0 +1,77 @@
+---
+import PageHeader from '@/components/PageHeader.astro';
+import Base from '@/layouts/Base.astro';
+import { pages } from '@/data/pages.ts';
+import { uses } from '@/data/uses.ts';
+import { pageGraph } from '@/lib/schema.ts';
+
+const meta = pages.uses;
+const hasAffiliateLinks = uses.some((group) => group.items.some((item) => item.affiliate));
+
+const graph = pageGraph({
+  path: meta.path,
+  title: meta.title,
+  description: meta.description,
+  trail: [{ name: meta.label, path: meta.path }],
+});
+---
+
+<Base meta={meta} graph={graph}>
+  <PageHeader eyebrow="Uses" title="What I use">
+    <p>The hardware, software and services I rely on every day. I keep this list up to date as things change.</p>
+  </PageHeader>
+
+  <div class="shell">
+    <nav aria-label="Sections" class="mb-12" data-md-skip>
+      <ul class="flex flex-wrap gap-2">
+        {
+          uses.map((group) => (
+            <li>
+              <a href={`#${group.id}`} class="tag text-[0.9375rem] transition-colors hover:border-ink hover:text-ink">
+                {group.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      uses.map((group) => (
+        <section
+          class="grid scroll-mt-8 gap-x-14 gap-y-5 border-t border-line py-10 lg:grid-cols-[16rem_minmax(0,1fr)]"
+          aria-labelledby={group.id}
+        >
+          <div>
+            <h2 id={group.id} class="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)]">
+              {group.title}
+            </h2>
+            {group.intro && <p class="mt-3 text-[0.9375rem] text-muted">{group.intro}</p>}
+          </div>
+          <ul class="measure space-y-3.5">
+            {group.items.map((item) => (
+              <li>
+                {item.url ? (
+                  <a href={item.url} class="link font-medium" rel={item.affiliate ? 'sponsored nofollow' : undefined}>
+                    {item.name}
+                  </a>
+                ) : (
+                  <span class="font-medium">{item.name}</span>
+                )}
+                {item.note && <span class="text-muted">: {item.note}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    {
+      hasAffiliateLinks && (
+        <p class="border-t border-line pt-8 text-sm text-muted">
+          Links to Amazon on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases.
+        </p>
+      )
+    }
+  </div>
+</Base>
