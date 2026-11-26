@@ -1,0 +1,30 @@
+---
+import Email from '@/components/Email.astro';
+import Icon from '@/components/Icon.astro';
+import { booking } from '@/data/profile.ts';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Have something to build or launch?' } = Astro.props;
+---
+
+<section class="shell mt-24 sm:mt-32" aria-labelledby="contact-band">
+  <div class="rounded-3xl border border-line bg-surface px-6 py-12 sm:px-12 sm:py-16">
+    <h2 id="contact-band" class="display max-w-3xl text-[clamp(2rem,1.5rem+2.4vw,3.5rem)]">{title}</h2>
+    <p class="mt-5 max-w-2xl text-lg text-muted">
+      Start with a {booking.quickChat.duration.replace(' minutes', '-minute')} chat. If there is more to work through,
+      we can book a full hour. Or write to me at <Email />.
+    </p>
+    <ul class="mt-8 flex flex-wrap gap-3">
+      <li>
+        <a href={booking.quickChat.url} class="btn btn-primary">
+          <Icon name="lucide:calendar" size="1rem" />
+          Book a quick chat
+        </a>
+      </li>
+      <li><a href="/contact" class="btn btn-ghost">All the ways to reach me</a></li>
+    </ul>
+  </div>
+</section>

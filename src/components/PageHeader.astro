@@ -1,0 +1,26 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import type { Crumb } from '@/lib/schema.ts';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** Breadcrumb trail after "Home". */
+  trail?: Crumb[];
+}
+
+const { eyebrow, title, trail } = Astro.props;
+---
+
+<header class="shell pt-8 pb-10 sm:pt-14 sm:pb-14">
+  {trail && <Breadcrumbs trail={trail} />}
+  {eyebrow && !trail && <p class="eyebrow" data-md-skip>{eyebrow}</p>}
+  <h1 class="display mt-5 max-w-4xl text-[clamp(2.75rem,2rem+4.2vw,5rem)]">{title}</h1>
+  {
+    Astro.slots.has('default') && (
+      <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted sm:text-xl">
+        <slot />
+      </div>
+    )
+  }
+</header>

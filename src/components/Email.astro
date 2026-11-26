@@ -1,0 +1,19 @@
+---
+import { person } from '@/data/profile.ts';
+
+interface Props {
+  class?: string;
+  subject?: string;
+}
+
+const { class: className = 'link', subject } = Astro.props;
+const href = `mailto:${person.email}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
+---
+
+{
+  /* The comments tell Cloudflare's email obfuscation to leave the address alone:
+     rewriting it would inject a script into an otherwise script-free page. */
+}
+<Fragment set:html="<!--email_off-->" /><a href={href} class={className}><slot>{person.email}</slot></a><Fragment
+  set:html="<!--/email_off-->"
+/>

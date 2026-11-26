@@ -1,0 +1,89 @@
+---
+import Icon from '@/components/Icon.astro';
+import Logo from '@/components/Logo.astro';
+import { navigation, pages } from '@/data/pages.ts';
+import { person } from '@/data/profile.ts';
+import { hasPosts } from '@/lib/posts.ts';
+
+interface Props {
+  /** Path of the page being rendered. */
+  current: string;
+}
+
+const { current } = Astro.props;
+// "Writing" joins the navigation once there is something to read.
+const items = (await hasPosts()) ? [...navigation.slice(0, 3), pages.posts, ...navigation.slice(3)] : navigation;
+const isCurrent = (path: string) => current === path || current.startsWith(`${path}/`);
+---
+
+<header class="shell flex items-center justify-between gap-6 py-5 sm:py-6">
+  <a href="/" class="group flex items-center gap-3 rounded-sm" aria-label={`${person.name}, home`}>
+    <Logo class="size-7 transition-colors group-hover:text-muted" />
+    <span class="text-[0.9375rem] font-medium tracking-tight">{person.name}</span>
+  </a>
+
+  <div class="flex items-center gap-1 sm:gap-3">
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-7 text-[0.9375rem]">
+        {
+          items.map((item) => (
+            <li>
+              <a
+                href={item.path}
+                aria-current={isCurrent(item.path) ? 'page' : undefined}
+                class:list={[
+                  'rounded-sm py-1 transition-colors hover:text-ink',
+                  isCurrent(item.path) ? 'marker text-ink' : 'text-muted',
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button
+      type="button"
+      data-theme-toggle
+      class="js-only inline-flex size-11 items-center justify-center rounded-full text-muted transition-colors hover:text-ink"
+      aria-label="Switch between light and dark theme"
+    >
+      <Icon name="lucide:sun-moon" size="1.25rem" />
+    </button>
+
+    <details class="menu relative md:hidden">
+      <summary
+        class="inline-flex size-11 cursor-pointer list-none items-center justify-center rounded-full text-ink [&::-webkit-details-marker]:hidden"
+        aria-label="Menu"
+      >
+        <Icon name="lucide:menu" size="1.375rem" class="menu-open" />
+        <Icon name="lucide:x" size="1.375rem" class="menu-close" />
+      </summary>
+      <nav
+        aria-label="Main"
+        class="absolute right-0 top-full z-20 mt-2 w-56 rounded-2xl border border-line bg-surface p-2 shadow-lg"
+      >
+        <ul class="text-[1.0625rem]">
+          {
+            items.map((item) => (
+              <li>
+                <a
+                  href={item.path}
+                  aria-current={isCurrent(item.path) ? 'page' : undefined}
+                  class:list={[
+                    'flex min-h-11 items-center rounded-xl px-3 hover:bg-paper',
+                    isCurrent(item.path) && 'font-medium',
+                  ]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

@@ -1,0 +1,12 @@
+---
+import { renderIcon, type IconOptions } from '@/lib/icons.ts';
+
+interface Props extends IconOptions {
+  /** `collection:icon`, for example `lucide:arrow-up-right`. */
+  name: string;
+}
+
+const { name, ...options } = Astro.props;
+---
+
+<Fragment set:html={renderIcon(name, options)} />
