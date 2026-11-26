@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yesbhautik-site",
+  "compatibility_date": "2026-11-26",
+
+  // Static assets only: there is no Worker script, so no request ever
+  // touches metered compute. Headers and redirects come from
+  // public/_headers and public/_redirects.
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+
+  "workers_dev": true,
+  "preview_urls": true
+
+  // Go-live: attach the domain by adding the block below, then deploy.
+  // The zone must be in the same Cloudflare account as this Worker.
+  // "routes": [
+  //   { "pattern": "yesbhautik.co.in", "custom_domain": true }
+  // ]
+}
