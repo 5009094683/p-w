@@ -39,12 +39,12 @@ const graph = pageGraph({
       {
         sessions.map((session) => (
           <article class="card gap-4 p-7">
-            <p class="eyebrow">
-              {session.duration}, over {session.medium}
-            </p>
             <h3 class="display text-4xl">
               <a href={session.url} class="stretched rounded-sm">{session.name}</a>
             </h3>
+            <p class="eyebrow order-first">
+              {session.duration}, over {session.medium}
+            </p>
             <p class="text-muted">{session.summary}</p>
             <p class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium" data-md-skip>
               Book on Cal.com <Icon name="lucide:arrow-up-right" size="0.9375rem" />

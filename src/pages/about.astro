@@ -109,10 +109,10 @@ const graph = pageGraph({
     <SectionHeader eyebrow="Training" title="Courses I have completed" id="training">
       <p>Each badge was issued in my name and can be verified on Credly.</p>
     </SectionHeader>
-    <ul class="mt-10 grid gap-5 md:grid-cols-3">
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
       {
         credentials.map((credential) => (
-          <li class="card">
+          <article class="card">
             <h3 class="text-lg font-semibold leading-snug tracking-tight">
               <a href={credential.url} class="stretched rounded-sm">{credential.name}</a>
             </h3>
@@ -123,10 +123,10 @@ const graph = pageGraph({
             <p class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium" data-md-skip>
               Verify on Credly <Icon name="lucide:arrow-up-right" size="0.9375rem" />
             </p>
-          </li>
+          </article>
         ))
       }
-    </ul>
+    </div>
   </section>
 
   <section class="shell mt-24 sm:mt-32" aria-labelledby="outside">
