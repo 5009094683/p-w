@@ -21,9 +21,7 @@ const crumbs: Crumb[] = [{ name: 'Home', path: '/' }, ...trail];
               {crumb.name}
             </span>
           ) : (
-            <a href={crumb.path} class="link">
-              {crumb.name}
-            </a>
+            <a href={crumb.path} class="link">{crumb.name}</a>
           )}
         </li>
       ))

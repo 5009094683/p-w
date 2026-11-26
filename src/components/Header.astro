@@ -35,9 +35,7 @@ const isCurrent = (path: string) => current === path || current.startsWith(`${pa
                   'rounded-sm py-1 transition-colors hover:text-ink',
                   isCurrent(item.path) ? 'marker text-ink' : 'text-muted',
                 ]}
-              >
-                {item.label}
-              </a>
+              >{item.label}</a>
             </li>
           ))
         }
@@ -76,9 +74,7 @@ const isCurrent = (path: string) => current === path || current.startsWith(`${pa
                     'flex min-h-11 items-center rounded-xl px-3 hover:bg-paper',
                     isCurrent(item.path) && 'font-medium',
                   ]}
-                >
-                  {item.label}
-                </a>
+                >{item.label}</a>
               </li>
             ))
           }

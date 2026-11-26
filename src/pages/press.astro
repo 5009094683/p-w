@@ -99,6 +99,12 @@ const graph = pageGraph({
         <h2 id="facts" class="eyebrow">At a glance</h2>
         <table class="mt-5 w-full">
           <caption class="sr-only">{person.name}: key facts</caption>
+          <thead class="sr-only">
+            <tr>
+              <th scope="col">Fact</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             {
               quickFacts.map((fact) => (
@@ -108,9 +114,7 @@ const graph = pageGraph({
                   </th>
                   <td class="py-3.5 align-top font-medium [overflow-wrap:anywhere]">
                     {fact.href ? (
-                      <a href={fact.href} class="link">
-                        {fact.value}
-                      </a>
+                      <a href={fact.href} class="link">{fact.value}</a>
                     ) : (
                       fact.value
                     )}
@@ -140,11 +144,12 @@ const graph = pageGraph({
           data-md-skip
         />
         <figcaption class="mt-4 text-[0.9375rem] text-muted">
-          <a href={person.headshot} class="link inline-flex items-center gap-1.5 font-medium text-ink" download>
-            <Icon name="lucide:download" size="1rem" />
-            Download the headshot
-          </a>
-          <span class="mt-1 block">PNG, 1000 by 1000 pixels.</span>
+          <p>
+            <a href={person.headshot} class="link inline-flex items-center gap-1.5 font-medium text-ink" download
+              ><Icon name="lucide:download" size="1rem" />Download the headshot</a
+            >
+          </p>
+          <p class="mt-1">PNG, 1000 by 1000 pixels.</p>
         </figcaption>
       </figure>
     </div>
@@ -179,9 +184,7 @@ const graph = pageGraph({
             <p>{item.fact}</p>
             <p class="text-sm text-muted sm:pt-1 sm:text-right">
               <span class="sm:sr-only">Source: </span>
-              <a href={item.href} class="link">
-                {item.source}
-              </a>
+              <a href={item.href} class="link">{item.source}</a>
             </p>
           </li>
         ))
@@ -248,9 +251,7 @@ const graph = pageGraph({
                 {formatLongDate(item.data.date)}
               </time>
               <p>
-                <a href={item.data.url} class="link font-medium">
-                  {item.data.title}
-                </a>
+                <a href={item.data.url} class="link font-medium">{item.data.title}</a>
                 <span class="text-muted">, {item.data.outlet}</span>
               </p>
             </li>

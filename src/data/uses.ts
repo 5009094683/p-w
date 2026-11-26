@@ -51,7 +51,7 @@ export const uses: UseGroup[] = [
       { name: 'Cosmic Byte CB-GK-16 mechanical keyboard', ...amazon('40fPcl6'), note: 'Backup keyboard.' },
       { name: 'Tukzer large mouse pad', ...amazon('45T0QDw') },
       { name: 'Ergonomic chair', note: 'I sit all day, so I might as well have a good chair.' },
-      { name: 'DJI Osmo 360', url: 'https://www.dji.com/osmo-360' },
+      { name: 'DJI Osmo 360', url: 'https://www.dji.com/360' },
       { name: 'Ledger Stax', url: 'https://shop.ledger.com/pages/ledger-stax' },
     ],
   },
@@ -64,14 +64,14 @@ export const uses: UseGroup[] = [
         url: 'https://www.trebleet.com/',
         note: 'Transfers at up to 80 Gbps.',
       },
-      { name: 'Samsung 990 PRO, 4 TB', url: 'https://semiconductor.samsung.com/consumer-storage/internal-ssd/990-pro/' },
+      { name: 'Samsung 990 PRO, 4 TB', url: 'https://www.samsung.com/us/memory-storage/ssd/' },
       {
         name: 'WD SN580 NVMe SSD, 1 TB',
-        url: 'https://shop.sandisk.com/en-ie/products/ssd/internal-ssd/wd-blue-sn580-nvme-ssd',
+        url: 'https://www.sandisk.com/en-ie/product-portfolio/ssd/internal-ssd',
       },
       {
         name: 'SanDisk Extreme PRO microSDXC, 1 TB',
-        url: 'https://shop.sandisk.com/en-in/products/memory-cards/microsd-cards/sandisk-extreme-pro-uhs-i-microsd',
+        url: 'https://www.sandisk.com/en-in/products/memory-cards/microsd-cards/sandisk-extreme-pro-uhs-i-microsd',
       },
       {
         name: 'WD Elements portable hard drive, 1 TB',
@@ -79,11 +79,11 @@ export const uses: UseGroup[] = [
       },
       {
         name: 'UGREEN Nexode 300W GaN charger',
-        url: 'https://www.ugreen.com/products/ugreen-300w-desktop-usb-c-gan-charger',
+        url: 'https://us.ugreen.com/collections/usb-c-desktop-chargers',
       },
       {
         name: 'UGREEN Nexode power bank, 25,000 mAh, 200W',
-        url: 'https://www.ugreen.com/collections/power-bank/products/ugreen-nexode-power-bank-25000mah-200w-with-smart-digital-display',
+        url: 'https://us.ugreen.com/collections/power-bank',
       },
       { name: 'UGREEN cables and accessories', url: 'https://www.ugreen.com/', note: 'Everything else that plugs in.' },
     ],
@@ -93,7 +93,7 @@ export const uses: UseGroup[] = [
     title: 'Audio',
     items: [
       { name: 'Shure MV7+', ...amazon('41yhVmp'), note: 'My first choice for a smooth sound.' },
-      { name: 'RØDE PSA1 boom arm', url: 'https://rode.com/en/accessories/stands-bars/psa1', note: 'Stays quiet when it moves.' },
+      { name: 'RØDE PSA1 boom arm', url: 'https://rode.com/en-au/products/psa1', note: 'Stays quiet when it moves.' },
       { name: 'Sony WH-1000XM6', url: 'https://electronics.sony.com/audio/headphones/headband/p/wh1000xm6-b' },
       { name: 'AirPods Pro 2', url: 'https://www.apple.com/airpods-pro/' },
       { name: 'OnePlus Buds 2', ...amazon('49cXFJS'), note: 'Premium quality and a solid build.' },

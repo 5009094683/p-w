@@ -1,66 +1,66 @@
 {
   "/": {
-    "hash": "3c2f46c65ba58b34",
+    "hash": "b1504ba491a898f9",
     "date": "2026-11-26"
   },
   "/about": {
-    "hash": "7e3954ffdccb6e61",
+    "hash": "56ca395494986ca8",
     "date": "2026-11-26"
   },
   "/services": {
-    "hash": "bbaf6e79db9899d2",
+    "hash": "c07ad922b6223d88",
     "date": "2026-11-26"
   },
   "/projects": {
-    "hash": "a2e99bae654ce3e4",
+    "hash": "c00b86beb00c52a2",
     "date": "2026-11-26"
   },
   "/projects/feedback-flow": {
-    "hash": "59cd92e3bb80e2ff",
+    "hash": "af6a65dbc81d12a0",
     "date": "2026-11-26"
   },
   "/projects/flavorgpt": {
-    "hash": "7a5e8364f51d16c9",
+    "hash": "2c0dec3f602624a0",
     "date": "2026-11-26"
   },
   "/projects/javagpt": {
-    "hash": "bed80121f60b0809",
+    "hash": "4f89d606b4db1e3c",
     "date": "2026-11-26"
   },
   "/projects/master-ai-bot": {
-    "hash": "4946d71edb0cfb03",
+    "hash": "7dbd628fdf1a902d",
     "date": "2026-11-26"
   },
   "/projects/osmo360": {
-    "hash": "4ba686e1a09b6589",
+    "hash": "3bee74eff7fa0717",
     "date": "2026-11-26"
   },
   "/projects/public-api-scraper": {
-    "hash": "61b35003c623cb6b",
+    "hash": "3bd395a8f72797e3",
     "date": "2026-11-26"
   },
   "/projects/talk-with-pdf": {
-    "hash": "ba430112a34ffe04",
+    "hash": "1a9df9fa5e55407a",
     "date": "2026-11-26"
   },
   "/projects/tgmoji": {
-    "hash": "b95699732ea2bc7a",
+    "hash": "8b31da0380610141",
     "date": "2026-11-26"
   },
   "/projects/ttweety-connect": {
-    "hash": "8061b40f510de024",
+    "hash": "6b00f83a09ff8ea1",
     "date": "2026-11-26"
   },
   "/projects/wa-contact": {
-    "hash": "14a5a7eefbac2278",
+    "hash": "8ee9f8e31e75c7b9",
     "date": "2026-11-26"
   },
   "/projects/whatsapp-ai-bot": {
-    "hash": "aac488898512c335",
+    "hash": "47a637818062433c",
     "date": "2026-11-26"
   },
   "/projects/xopenapi": {
-    "hash": "a66aaa4ed0ff7c80",
+    "hash": "fb1eac7a9560681b",
     "date": "2026-11-26"
   },
   "/speaking": {
@@ -72,11 +72,11 @@
     "date": "2026-11-26"
   },
   "/press": {
-    "hash": "2e9025427de7bf44",
+    "hash": "b5b2395e5ea7034a",
     "date": "2026-11-26"
   },
   "/uses": {
-    "hash": "ae9c97c5163ecc5b",
+    "hash": "83933825c7593565",
     "date": "2026-11-26"
   }
 }

@@ -155,7 +155,11 @@ export function projectPageMeta(project: Project): PageMeta {
   const stack = project.detail?.stack.slice(0, 3) ?? [];
   const built = stack.length ? `, built with ${joinList(stack)}` : '';
   const full = `${project.tagline} A project by Bhautik Bavadiya${built}.`;
-  const description = full.length <= 160 ? full : `${project.tagline} A project by Bhautik Bavadiya.`;
+  const description = !project.repo
+    ? `${project.tagline} The product Bhautik Bavadiya is building at YBX Labs.`
+    : full.length <= 160
+      ? full
+      : `${project.tagline} A project by Bhautik Bavadiya.`;
   return {
     path: `/projects/${project.slug}`,
     label: project.name,

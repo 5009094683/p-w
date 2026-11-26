@@ -81,9 +81,7 @@ const graph = pageGraph({
                 <h3 class="text-xl font-semibold tracking-tight">{talk.data.title}</h3>
                 <p class="mt-1 text-muted">
                   {talk.data.eventUrl ? (
-                    <a href={talk.data.eventUrl} class="link">
-                      {talk.data.event}
-                    </a>
+                    <a href={talk.data.eventUrl} class="link">{talk.data.event}</a>
                   ) : (
                     talk.data.event
                   )}
@@ -94,16 +92,12 @@ const graph = pageGraph({
                   <ul class="mt-2 flex flex-wrap gap-4 text-[0.9375rem]">
                     {talk.data.recording && (
                       <li>
-                        <a href={talk.data.recording} class="link">
-                          Recording
-                        </a>
+                        <a href={talk.data.recording} class="link">Recording</a>
                       </li>
                     )}
                     {talk.data.slides && (
                       <li>
-                        <a href={talk.data.slides} class="link">
-                          Slides
-                        </a>
+                        <a href={talk.data.slides} class="link">Slides</a>
                       </li>
                     )}
                   </ul>

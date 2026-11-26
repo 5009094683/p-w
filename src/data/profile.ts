@@ -301,7 +301,7 @@ export const services: Service[] = [
     name: 'AI product strategy',
     type: 'AI product consulting',
     summary: 'Deciding where AI belongs in a product, which models to use and how to keep it reliable.',
-    body: 'I build FlavorGPT, which works across more than 100 models, so I spend my days on the questions every AI product has to answer: which models to use, what to build and what to buy, and how to keep quality up and cost down.',
+    body: 'I build FlavorGPT, which works across more than 100 models, so these are questions I have had to answer for my own product: which models to use, what to build and what to buy, and how to keep quality up and cost down.',
   },
 ];
 
@@ -428,7 +428,7 @@ export function bios() {
   const long = [
     'Bhautik Bavadiya, known online as Yesbhautik, is a technology founder based in Ahmedabad, India. He is the founder and CEO of YBX Labs, formerly YesbhautikX, which builds its own products and provides engineering services across artificial intelligence, machine learning and Web3.',
     'His main work is FlavorGPT, an AI workspace that connects language models to a team’s databases, APIs and files, with autonomous agents, multi-model chat and MCP tool integration. The same architecture underpins FlavorAI, the YBX Labs platform for companies.',
-    `Alongside the company, he works directly with founders on go-to-market strategy, business development, token generation events and AI product strategy, and he speaks at business and technology events. He has published code on GitHub since ${stats.since}; as of ${stats.asOfLabel} his projects, among them Whatsapp-Ai-BOT and Master AI BOT, had ${stats.sentence}.`,
+    `Alongside the company, he works directly with founders on go-to-market strategy, business development, token generation events and AI product strategy, and he is available to speak at business and technology events. He has published code on GitHub since ${stats.since}; as of ${stats.asOfLabel} his projects, among them Whatsapp-Ai-BOT and Master AI BOT, had ${stats.sentence}.`,
   ];
   return { oneLine, short, long };
 }
@@ -469,7 +469,7 @@ export function faqs(): Faq[] {
     {
       question: 'What does Bhautik help founders with?',
       answer:
-        'Go-to-market strategy, business development and growth, token generation events (TGE) and Web3 strategy, and AI product strategy. He also gives talks and workshops.',
+        'Go-to-market strategy, business development and growth, token generation events (TGE) and Web3 strategy, and AI product strategy. He is also available for talks and workshops.',
     },
     {
       question: 'How do I book time with Bhautik?',
@@ -479,7 +479,7 @@ export function faqs(): Faq[] {
     {
       question: 'Where is Bhautik based?',
       answer:
-        'In Ahmedabad, India. He works with founders remotely and speaks at events both in person and online.',
+        'In Ahmedabad, India. He works with founders remotely, and accepts speaking invitations both in person and online.',
     },
   ];
 }

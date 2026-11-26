@@ -43,9 +43,7 @@ const graph = pageGraph({
               {session.duration}, over {session.medium}
             </p>
             <h3 class="display text-4xl">
-              <a href={session.url} class="stretched rounded-sm">
-                {session.name}
-              </a>
+              <a href={session.url} class="stretched rounded-sm">{session.name}</a>
             </h3>
             <p class="text-muted">{session.summary}</p>
             <p class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium" data-md-skip>

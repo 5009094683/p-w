@@ -81,8 +81,9 @@ const graph = pageGraph({
         {detail.intro.map((paragraph) => <p>{paragraph}</p>)}
         {
           detail.basedOn && (
-            <p class="text-base text-muted">
-              Builds on <a href={detail.basedOn.url} class="link">{detail.basedOn.name}</a>.
+            <p>
+              It builds on <a href={detail.basedOn.url} class="link">{detail.basedOn.name}</a>, an open-source project
+              released under the {detail.basedOn.license} license.
             </p>
           )
         }
@@ -173,6 +174,12 @@ const graph = pageGraph({
 
       <table class="mt-8 w-full text-[0.9375rem]">
         <caption class="sr-only">{project.name}: key facts</caption>
+        <thead class="sr-only">
+          <tr>
+            <th scope="col">Fact</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
         <tbody>
           {
             facts.map((fact) => (
@@ -182,9 +189,7 @@ const graph = pageGraph({
                 </th>
                 <td class="py-3 text-right align-top font-medium [overflow-wrap:anywhere]">
                   {fact.href ? (
-                    <a href={fact.href} class="link">
-                      {fact.value}
-                    </a>
+                    <a href={fact.href} class="link">{fact.value}</a>
                   ) : (
                     fact.value
                   )}
@@ -203,9 +208,7 @@ const graph = pageGraph({
             <ul class="mt-3 space-y-2 text-[0.9375rem]">
               {detail.links.map((link) => (
                 <li>
-                  <a href={link.url} class="link">
-                    {link.label}
-                  </a>
+                  <a href={link.url} class="link">{link.label}</a>
                 </li>
               ))}
             </ul>

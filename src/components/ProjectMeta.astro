@@ -24,6 +24,10 @@ const parts: { icon?: string; value: string; unit?: string }[] = repo
       { value: String(yearOf(repo.createdAt)) },
     ]
   : [{ value: 'A YBX Labs product' }];
+
+// Read aloud, and in the Markdown version, the parts form a list: "282 stars, 240 forks, JavaScript".
+const suffix = (part: (typeof parts)[number], index: number) =>
+  `${part.unit ? ` ${part.unit}` : ''}${index < parts.length - 1 ? ',' : ''}`;
 ---
 
 <p class:list={['flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted', className]}>
@@ -31,11 +35,7 @@ const parts: { icon?: string; value: string; unit?: string }[] = repo
     parts.map((part, index) => (
       <span class="inline-flex items-center gap-1.5">
         {part.icon && <Icon name={part.icon} size="0.875rem" />}
-        <span>
-          {part.value}
-          {part.unit && <span class="sr-only"> {part.unit}</span>}
-          {index < parts.length - 1 && <span class="sr-only">,</span>}
-        </span>
+        <span>{part.value}<span class="sr-only">{suffix(part, index)}</span></span>
       </span>
     ))
   }

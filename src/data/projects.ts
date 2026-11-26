@@ -41,7 +41,7 @@ export interface ProjectDetail {
   timeline?: { date: string; label: string }[];
   links?: ProjectLink[];
   /** The open-source project this one builds on, when there is one. */
-  basedOn?: { name: string; url: string };
+  basedOn?: { name: string; url: string; license: string };
   /** License as shown to readers, when GitHub cannot classify it. */
   licenseNote?: string;
   /** URL of that license. */
@@ -165,7 +165,7 @@ export const projects: Project[] = [
     detail: {
       intro: [
         'Master AI BOT is a Telegram bot that gives you ChatGPT in a chat window you control. You run it on your own server with your own OpenAI key, so there is no shared quota and no web interface to wait on.',
-        'I publish and maintain it. It builds on the open-source chatgpt_telegram_bot project by father-bot, released under the MIT license, and adds deployment guides for Linux, macOS and Windows.',
+        'I publish and maintain it, with deployment guides for Linux, macOS and Windows.',
       ],
       features: [
         'Replies stream into the chat as they are generated.',
@@ -190,6 +190,7 @@ export const projects: Project[] = [
       basedOn: {
         name: 'chatgpt_telegram_bot by father-bot',
         url: 'https://github.com/father-bot/chatgpt_telegram_bot',
+        license: 'MIT',
       },
     },
   },
@@ -386,7 +387,7 @@ export const projects: Project[] = [
     slug: 'javagpt',
     name: 'JavaGPT',
     group: 'ai',
-    tagline: 'A desktop chat application for OpenAI models, built with JavaFX.',
+    tagline: 'A desktop chat client for OpenAI models, written in Java.',
     repo: 'yesbhautik/JavaGPT',
     detail: {
       intro: [

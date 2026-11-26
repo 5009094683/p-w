@@ -90,8 +90,8 @@ const graph = pageGraph({
           <a href="/projects/flavorgpt" class="stretched rounded-sm">{products.flavorgpt.name}</a>
         </h3>
         <p class="text-muted">
-          The product I spend most of my time on: an AI workspace that connects to your databases, APIs and files, and
-          puts many models behind one conversation.
+          The product I am building now: an AI workspace that connects to your databases, APIs and files, and puts
+          many models behind one conversation.
         </p>
         <p class="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-medium" data-md-skip>
           About FlavorGPT <Icon name="lucide:arrow-right" size="0.9375rem" />
@@ -160,7 +160,7 @@ const graph = pageGraph({
   <section class="shell mt-24 sm:mt-32" aria-labelledby="advisory">
     <SectionHeader eyebrow="Advisory" title="Work with me" id="advisory">
       <p>
-        Alongside the company, I work with founders one to one. These are the subjects I am asked about most.
+        Alongside the company, I work with founders one to one, on these four subjects.
       </p>
     </SectionHeader>
     <div class="mt-10 grid gap-5 sm:grid-cols-2">
@@ -168,9 +168,7 @@ const graph = pageGraph({
         services.map((service) => (
           <article class="card">
             <h3 class="text-xl font-semibold tracking-tight">
-              <a href={`/services#${service.id}`} class="stretched rounded-sm">
-                {service.name}
-              </a>
+              <a href={`/services#${service.id}`} class="stretched rounded-sm">{service.name}</a>
             </h3>
             <p class="text-muted">{service.summary}</p>
           </article>

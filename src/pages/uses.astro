@@ -27,9 +27,7 @@ const graph = pageGraph({
         {
           uses.map((group) => (
             <li>
-              <a href={`#${group.id}`} class="tag text-[0.9375rem] transition-colors hover:border-ink hover:text-ink">
-                {group.title}
-              </a>
+              <a href={`#${group.id}`} class="tag text-[0.9375rem] transition-colors hover:border-ink hover:text-ink">{group.title}</a>
             </li>
           ))
         }
@@ -51,14 +49,8 @@ const graph = pageGraph({
           <ul class="measure space-y-3.5">
             {group.items.map((item) => (
               <li>
-                {item.url ? (
-                  <a href={item.url} class="link font-medium" rel={item.affiliate ? 'sponsored nofollow' : undefined}>
-                    {item.name}
-                  </a>
-                ) : (
-                  <span class="font-medium">{item.name}</span>
-                )}
-                {item.note && <span class="text-muted">: {item.note}</span>}
+                {/* Name and note share one expression so that no space lands before the colon. */}
+                {item.url ? <a href={item.url} class="link font-medium" rel={item.affiliate ? 'sponsored nofollow' : undefined}>{item.name}</a> : <span class="font-medium">{item.name}</span>}{item.note && <span class="text-muted">: {item.note}</span>}
               </li>
             ))}
           </ul>
